@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import api from '../../../api';
 import { toast } from 'react-toastify';
 
@@ -54,23 +54,17 @@ function OrganizationSignup({ setOBoolean }) {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        console.log("step1" + event.target.name);
         if (file) {
             const reader = new FileReader();
-            console.log("step2" + event.target.name);
             reader.onload = (e) => {
-                console.log("step3" + e.target.name + event.target.name);
                 const fileContent = e.target.result;
-
                 try {
                     console.log("step4" + event.target.name);
-                    // Parse the JSON content and update the 'members' field in your state
                     const jsonData = JSON.parse(fileContent);
-                    debugger
                     setLFormData({
                         ...lFormData,
                         [event.target.name]: jsonData,
-                        memtypeName : file?.name
+                        // memtypeName : file?.name
                     });
                 } catch (error) {
                     console.error('Error parsing JSON file:', error);
@@ -184,7 +178,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             type="number"
                                             className="form-control"
                                             id="number"
-                                            placeholder="Enter your number"
+                                            placeholder=""
                                             name="pnumber"
                                             value={lFormData.pnumber}
                                         />
@@ -199,7 +193,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             onChange={handleInputChange}
                                             className="form-control"
                                             id="desc"
-                                            placeholder="Enter description"
+                                            placeholder=""
                                             name="desc"
                                             value={lFormData.desc}
                                         ></textarea>
@@ -248,7 +242,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             type="text"
                                             className="form-control"
                                             id="username"
-                                            placeholder="Enter your user name"
+                                            placeholder=""
                                             name="username"
                                             value={lFormData.username}
                                         />
@@ -264,7 +258,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             type="password"
                                             className="form-control"
                                             id="pwd"
-                                            placeholder="Enter your password"
+                                            placeholder=""
                                             name="pwd"
                                             value={lFormData.pwd}
                                         />

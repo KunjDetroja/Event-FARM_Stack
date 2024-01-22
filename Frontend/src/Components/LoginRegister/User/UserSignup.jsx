@@ -130,7 +130,7 @@ function UserSignup({ setUBoolean }) {
                                             type="text"
                                             className="form-control"
                                             id="username"
-                                            placeholder="Enter your user name"
+                                            placeholder=""
                                             name="username"
                                             value={lFormData.username}
                                             onChange={handleInputChange}
@@ -146,7 +146,7 @@ function UserSignup({ setUBoolean }) {
                                             type="password"
                                             className="form-control"
                                             id="pwd"
-                                            placeholder="Enter your password"
+                                            placeholder=""
                                             name="pwd"
                                             value={lFormData.pwd}
                                             onChange={handleInputChange}
