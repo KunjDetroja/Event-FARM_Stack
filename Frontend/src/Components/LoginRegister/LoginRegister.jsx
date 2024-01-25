@@ -11,11 +11,11 @@ const LoginRegister  = () => {
       <Navbar />
       <h1 className='mt-3'>
         <div className="text-center ">
-          <button className="btn btn-primary btn-lg mx-2 " onClick={() => setBoolean(true)} >
+          <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} onClick={() => setBoolean(true)} >
           <p className="h3">User</p>
             
           </button>
-          <button className="btn btn-primary btn-lg mx-2" onClick={() => setBoolean(false)} >
+          <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} onClick={() => setBoolean(false)} >
           <p className="h3">Organization</p>
           </button>
           </div>

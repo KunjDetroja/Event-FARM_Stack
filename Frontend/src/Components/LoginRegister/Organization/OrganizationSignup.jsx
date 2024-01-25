@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import api from '../../../api';
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+
 
 function OrganizationSignup({ setOBoolean }) {
+    const navigate = useNavigate();
 
     const [lFormData, setLFormData] = useState({
         clubname: "",
@@ -28,24 +31,31 @@ function OrganizationSignup({ setOBoolean }) {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         try {
-            await api.post("/organisationsignup/", lFormData);
-            
-            document.getElementById('memtype').value = ""
-            document.getElementById('members').value = ""
-            setLFormData({
-                clubname: "",
-                ownname: "",
-                email: "",
-                address: "",
-                city: "",
-                pnumber: '',
-                desc: "",
-                memtype: [],
-                members: [],
-                username: "",
-                pwd: "",
-            });
-            toast.success("SignUp Successful.")
+            const checking = await api.post("/organisationsignup/", lFormData);
+            if (checking.data.success !== false) {
+                localStorage.setItem("organization", JSON.stringify(checking.data));
+                toast.success("Login Successfully")
+                document.getElementById('memtype').value = ""
+                document.getElementById('members').value = ""
+                setLFormData({
+                    clubname: "",
+                    ownname: "",
+                    email: "",
+                    address: "",
+                    city: "",
+                    pnumber: '',
+                    desc: "",
+                    memtype: [],
+                    members: [],
+                    username: "",
+                    pwd: "",
+                });
+                navigate("/organization");
+            } else {
+                toast.error(checking.data.data);
+            }
+
+
 
         } catch (error) {
             toast.error("Error submitting form")
@@ -83,15 +93,15 @@ function OrganizationSignup({ setOBoolean }) {
                             <div className="col-12">
                                 <div className="mb-4">
                                     <h3>Organization Sign up</h3>
-                                    <p>If you have an account? <button className='btn btn-primary' onClick={() => {
+                                    <p>If you have an account? <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} onClick={() => {
                                         setOBoolean(true)
                                     }}>Login</button></p>
                                 </div>
                             </div>
                         </div>
                         <form onSubmit={handleFormSubmit}>
-                            <div className="row  overflow-hidden" >
-                                <div className="col-12">
+                            <div className="row overflow-hidden">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             onChange={handleInputChange}
@@ -103,11 +113,11 @@ function OrganizationSignup({ setOBoolean }) {
                                             value={lFormData.clubname}
                                         />
                                         <label htmlFor="clubname" className="form-label">
-                                            Name
+                                            Club Name
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             onChange={handleInputChange}
@@ -123,7 +133,9 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                            </div>
+                            <div className="row  overflow-hidden" >
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             onChange={handleInputChange}
@@ -139,6 +151,25 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
+                                <div className="col-6">
+                                    <div className="form-floating mb-3">
+                                        <input
+                                            onChange={handleInputChange}
+                                            type="number"
+                                            className="form-control"
+                                            id="number"
+                                            placeholder=""
+                                            name="pnumber"
+                                            value={lFormData.pnumber}
+                                        />
+                                        <label htmlFor="pnumber" className="form-label">
+                                            Phone Number:
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="row  overflow-hidden" >
                                 <div className="col-12">
                                     <div className="form-floating mb-3">
                                         <input
@@ -155,6 +186,8 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="row  overflow-hidden" >
                                 <div className="col-12">
                                     <div className="form-floating mb-3">
                                         <input
@@ -171,22 +204,8 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
-                                    <div className="form-floating mb-3">
-                                        <input
-                                            onChange={handleInputChange}
-                                            type="number"
-                                            className="form-control"
-                                            id="number"
-                                            placeholder=""
-                                            name="pnumber"
-                                            value={lFormData.pnumber}
-                                        />
-                                        <label htmlFor="pnumber" className="form-label">
-                                            Phone Number:
-                                        </label>
-                                    </div>
-                                </div>
+                            </div>
+                            <div className="row  overflow-hidden">
                                 <div className="col-12">
                                     <div className="form-floating mb-3">
                                         <textarea
@@ -202,7 +221,9 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                            </div>
+                            <div className="row  overflow-hidden">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             type="file"
@@ -210,16 +231,16 @@ function OrganizationSignup({ setOBoolean }) {
                                             id="memtype"
                                             accept=".json"
                                             onChange={handleFileChange}
-                                            
+
                                             multiple={false}
                                             name="memtype"
                                         />
                                         <label htmlFor="memtype" className="form-label">
-                                            Membership Type .json File
+                                            Membership .json File
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             type="file"
@@ -235,7 +256,7 @@ function OrganizationSignup({ setOBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             onChange={handleInputChange}
@@ -247,11 +268,11 @@ function OrganizationSignup({ setOBoolean }) {
                                             value={lFormData.username}
                                         />
                                         <label htmlFor="username" className="form-label">
-                                            UserName:
+                                            Username
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating mb-3">
                                         <input
                                             onChange={handleInputChange}
@@ -263,13 +284,13 @@ function OrganizationSignup({ setOBoolean }) {
                                             value={lFormData.pwd}
                                         />
                                         <label htmlFor="pwd" className="form-label">
-                                            Password:
+                                            Password
                                         </label>
                                     </div>
                                 </div>
                                 <div className="col-12">
                                     <div className="d-grid">
-                                        <button className="btn btn-primary btn-lg" type="submit">Log in now</button>
+                                        <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} type="submit">Log in now</button>
                                     </div>
                                 </div>
                             </div>

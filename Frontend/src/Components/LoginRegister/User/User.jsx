@@ -6,12 +6,12 @@ function User() {
   const [Ubooleanvalue, setUBoolean] = useState(true);
   return (
     <>
-      <section className="bg-primary py-3 py-md-5 py-xl-8">
+      <section className=" py-3 py-md-5 py-xl-8" style={{backgroundColor: '#0e2643',color:"white"}}>
         <div className="container">
           <div className="row gy-4 align-items-center">
           {Ubooleanvalue ? <UserLogin setUBoolean={setUBoolean} /> : <UserSignup setUBoolean={setUBoolean} />}
             <div className="col-12 col-md-6 col-xl-7">
-              <div className="d-flex justify-content-center text-bg-primary">
+              <div className="d-flex justify-content-center">
                 <div className="col-12 col-xl-9">
                   <hr className="border-primary-subtle mb-4" />
                   <h2 className="h1 mb-4">We gives you Information of Club Event</h2>

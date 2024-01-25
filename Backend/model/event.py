@@ -12,6 +12,7 @@ class User(BaseModel):
     memberid: Optional[str] = None
     membertype : Optional[str] = None
     clubname : Optional[str] = None
+    start_date : Optional[date] = None  
     expiry_date : Optional[date] = None
 
 
@@ -30,6 +31,7 @@ class Organization(BaseModel):
 
 class EventPost(BaseModel):
     clubname: str
+    type : str
     event_title: str
     event_image: str
     event_start_date: date

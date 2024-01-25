@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import api from "../../../api"
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 function UserSignup({ setUBoolean }) {
+    const navigate = useNavigate();
     const [lFormData, setLFormData] = useState({
         name: "",
         email: "",
         pnumber: '',
-        gender: "",
+        gender: "", 
         username: "",
         pwd: "",
     });
@@ -21,16 +24,23 @@ function UserSignup({ setUBoolean }) {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         try {
-            await api.post("/usersignup/", lFormData);
-
-            setLFormData({
-                name: "",
-                email: "",
-                pnumber: '',
-                gender: "",
-                username: "",
-                pwd: "",
-            });
+            const checking = await api.post("/usersignup/", lFormData);
+            if (checking.data.success !== false) {
+                localStorage.setItem("users", JSON.stringify(checking.data));
+                toast.success("Login Successfully")
+                setLFormData({
+                    name: "",
+                    email: "",
+                    pnumber: '',
+                    gender: "",
+                    username: "",
+                    pwd: "",
+                });
+                navigate("/home");
+              } else {
+                toast.error(checking.data.data);
+              }
+            
         } catch (error) {
             console.error("Error submitting form:", error);
         }
@@ -44,7 +54,7 @@ function UserSignup({ setUBoolean }) {
                             <div className="col-12">
                                 <div className="mb-4">
                                     <h3>User Sign up</h3>
-                                    <p>if you have an account? <button className='btn btn-primary' onClick={() => {
+                                    <p>if you have an account? <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} onClick={() => {
                                         setUBoolean(true)
                                     }}>Login</button></p>
                                 </div>
@@ -136,7 +146,7 @@ function UserSignup({ setUBoolean }) {
                                             onChange={handleInputChange}
                                         />
                                         <label htmlFor="username" className="form-label">
-                                            Username:
+                                            Username
                                         </label>
                                     </div>
                                 </div>
@@ -152,13 +162,13 @@ function UserSignup({ setUBoolean }) {
                                             onChange={handleInputChange}
                                         />
                                         <label htmlFor="pwd" className="form-label">
-                                            Password:
+                                            Password
                                         </label>
                                     </div>
                                 </div>
                                 <div className="col-12">
                                     <div className="d-grid">
-                                        <button className="btn btn-primary btn-lg" type="submit">Log in now</button>
+                                        <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} type="submit">Log in now</button>
                                     </div>
                                 </div>
                             </div>

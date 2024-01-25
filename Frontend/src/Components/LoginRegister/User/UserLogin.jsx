@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import api from '../../../api'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 function UserLogin({ setUBoolean }) {
   const navigate = useNavigate();
-  const [details, setDetails] = useState([])
-
+  const [clubname, setClubname] = useState([])
   const [lFormData, setLFormData] = useState({
     clubname: "",
     username: "",
@@ -13,7 +13,7 @@ function UserLogin({ setUBoolean }) {
   });
 
   const handleInputChange = (event) => {
-    console.log(event.target.name + " " + event.target.value);
+    // console.log(event.target.name + " " + event.target.value);
     setLFormData({
       ...lFormData,
       [event.target.name]: event.target.value,
@@ -23,7 +23,7 @@ function UserLogin({ setUBoolean }) {
   const fetchAllDetails = async () => {
     try {
       const response = await api.get("/clubnames/");
-      setDetails(response.data);
+      setClubname(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }
@@ -37,19 +37,20 @@ function UserLogin({ setUBoolean }) {
     console.log(lFormData)
     try {
       const checking = await api.post("/userlogin/", lFormData);
-      console.log(checking);
-      // if (checking.data) {
-      //   // Use the navigate function to go to the home page
-      //   console.log("form data: " + JSON.stringify(lFormData))
-      //   navigate("/home", { state: JSON.stringify(lFormData) });
-      // } else {
-      //   alert("Wrong Username & Password!");
-      // }
-      setLFormData({
-        clubname: "",
-        username: "",
-        pwd: "",
-      });
+      // console.log(checking);
+      if (checking.data.success !== false) {
+        localStorage.setItem("users", JSON.stringify(checking.data));
+        toast.success("Login Successfully")
+        setLFormData({
+          clubname: "",
+          username: "",
+          pwd: "",
+        });
+        navigate("/home");
+      } else {
+        toast.error(checking.data.data);
+      }
+      
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -65,7 +66,7 @@ function UserLogin({ setUBoolean }) {
                   <h3>User Login </h3>
                   <p>Don't have an account?
                     <button
-                      className='btn btn-primary'
+                      style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}}
                       onClick={() => { setUBoolean(false) }} >
                       Sign up
                     </button>
@@ -85,7 +86,7 @@ function UserLogin({ setUBoolean }) {
                       value={lFormData.clubname}
                     >
 
-                      {details.map((club) => (
+                      {clubname.map((club) => (
                         <option key={club} value={club}>
                           {club}
                         </option>
@@ -130,7 +131,7 @@ function UserLogin({ setUBoolean }) {
                 </div>
                 <div className="col-12">
                   <div className="d-grid">
-                    <button className="btn btn-primary btn-lg" type="submit">Log in now</button>
+                    <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} type="submit">Log in now</button>
                   </div>
                 </div>
               </div>

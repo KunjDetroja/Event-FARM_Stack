@@ -1,10 +1,34 @@
-import React, { useState } from 'react'
-import Navbar from './Navbar'
-import api from '../api';
+import React, { useState, useEffect } from 'react'
+import OrganizationNavbar from './OrganizationNavbar'
+import api from '../../../../api';
+import { toast } from "react-toastify"
+import { useNavigate } from 'react-router-dom';
 
-function Home() {
+
+function OrganizationAddPost() {
+    const [memType, setMemType] = useState()
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState(
+        JSON.parse(localStorage.getItem("organization"))
+    );
+
+    const fetchAllMemTypedetails = async () => {
+        try {
+            const cname = userData.clubname;
+            const response = await api.post("/getmemtype/", { "clubname": cname });
+            setMemType(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error fetching details:", error);
+        }
+    };
+    useEffect(() => {
+        fetchAllMemTypedetails();
+    }, []);
+
     const [lFormData, setLFormData] = useState({
-        clubname: '',
+        clubname: userData.clubname,
+        type: '',
         event_title: '',
         event_image: "",
         event_start_date: '',
@@ -21,6 +45,7 @@ function Home() {
         event_organizer_email: '',
         event_organizer_pnumber: '',
     });
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -67,31 +92,32 @@ function Home() {
         try {
             const checking = await api.post("/eventpost/", lFormData);
             console.log(checking);
-            // if (checking.data) {
-            //   // Use the navigate function to go to the home page
-            //   console.log("form data: " + JSON.stringify(lFormData))
-            //   navigate("/home", { state: JSON.stringify(lFormData) });
-            // } else {
-            //   alert("Wrong Username & Password!");
-            // }
-            setLFormData({
-                clubname: '',
-                event_title: '',
-                event_image: "",
-                event_start_date: '',
-                event_end_date: '',
-                start_time: '',
-                end_time: '',
-                venue_name: '',
-                venue_address: '',
-                venue_city: '',
-                ticket_price: '',
-                event_highlight: '',
-                event_desc: '',
-                event_organizer_name: '',
-                event_organizer_email: '',
-                event_organizer_pnumber: '',
-            });
+            if (checking.data.success !== false) {
+                toast.success("Login Successfully")
+                navigate("/organizations/event");
+                setLFormData({
+                    clubname: userData.clubnme,
+                    type:"",
+                    event_title: '',
+                    event_image: "",
+                    event_start_date: '',
+                    event_end_date: '',
+                    start_time: '',
+                    end_time: '',
+                    venue_name: '',
+                    venue_address: '',
+                    venue_city: '',
+                    ticket_price: '',
+                    event_highlight: '',
+                    event_desc: '',
+                    event_organizer_name: '',
+                    event_organizer_email: '',
+                    event_organizer_pnumber: '',
+                });
+            } else {
+                toast.error(checking.data.data);
+            }
+
         }
         catch (error) {
             console.error("Error submitting form:", error);
@@ -99,9 +125,8 @@ function Home() {
     };
     return (
         <>
-            <Navbar />
-            <h2 className='text-center mt-4'>Hey Guys,  </h2>
-            <h2 className='text-center mt-4'>This page not finished yet </h2>
+            <OrganizationNavbar />
+            <h2 className='text-center mt-4'>Add Post  </h2>
             <div className="container mb-3 border rounded p-3">
                 <form onSubmit={handleFormSubmit}>
                     <div className="row gy-3 overflow-hidden">
@@ -115,6 +140,7 @@ function Home() {
                                     placeholder=""
                                     name="clubname"
                                     value={lFormData.clubname}
+                                    disabled
                                 />
                                 <label htmlFor="clubname" className="form-label">
                                     Club Name
@@ -344,7 +370,7 @@ function Home() {
                                 </label>
                             </div>
                         </div>
-                        <div className="col-6  align-items-center justify-content-center">
+                        <div className="col-6">
                             <div className="form-floating mb-3">
                                 <input
                                     onChange={handleInputChange}
@@ -360,9 +386,31 @@ function Home() {
                                 </label>
                             </div>
                         </div>
+                        <div className="col-6">
+                            <div className="form-floating mb-3">
+                                <select
+                                    onChange={handleInputChange}
+                                    className="form-select"
+                                    id="type"
+                                    name="type"
+                                    value={lFormData.type}
+                                >
+                                    <option >Select Membership Type</option>
+                                    <option value={"Public"}>Public</option>
+                                    {memType?.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </select>
+                                <label htmlFor="type" className="form-label">
+                                    Type
+                                </label>
+                            </div>
+                        </div>
                         <div className="col-12">
                             <div className="d-grid">
-                                <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} type="submit">Log in now</button>
+                                <button style={{ color: 'white', backgroundColor: '#0e2643', border: 'none', marginLeft: '1rem', padding: '0.3rem 0.5rem 0.3rem 0.5rem', borderRadius: '0.375rem' }} type="submit">Log in now</button>
                             </div>
                         </div>
                     </div>
@@ -372,4 +420,4 @@ function Home() {
     )
 }
 
-export default Home
+export default OrganizationAddPost
