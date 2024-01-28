@@ -33,7 +33,7 @@ function OrganizationLogin({ setOBoolean }) {
         });
         navigate("/organization");
       } else {
-        toast.error(checking.data.data);
+        toast.error(checking.data.error);
       }
 
     } catch (error) {

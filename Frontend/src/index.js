@@ -4,10 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'react-toastify/dist/ReactToastify.css';
+import { DataContext } from './DataContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+      // <DataContext.Provider value={}>
       <App/>
+      // <DataContext.Provider/>
+      
 );
 
 // If you want to start measuring performance in your app, pass a function

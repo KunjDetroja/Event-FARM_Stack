@@ -9,7 +9,7 @@ import {
   FaArrowCircleLeft,
   FaRupeeSign,
 } from "react-icons/fa";
-import api from "../../../../api"
+import api from '../../api'
 
 function OrganizationEvent() {
   const [details, setDetails] = useState()
@@ -68,7 +68,7 @@ function OrganizationEvent() {
     // Now you can use filteredFormData in your API call
     try {
       console.log("Inside try for api calling:")
-      const checking = await api.post("/orgfilters/", filteredFormData);
+      const checking = await api.post("/postfilters/", filteredFormData);
       console.log(checking);
       if (checking.data.success !== false) {
         console.log(checking.data)
@@ -113,7 +113,7 @@ function OrganizationEvent() {
   const navigate = useNavigate();
   const handlepostdetails = (post) => {
     // console.log(JSON.stringify(post))
-    navigate("/organizations/eventdetails", {
+    navigate("/organizations/event/eventdetails", {
       state: JSON.stringify(post),
 
     });
@@ -143,7 +143,7 @@ function OrganizationEvent() {
     <>
       <div><OrganizationNavbar /></div>
       <div>
-        <Link to="/organizations/addpost">
+        <Link to="/organizations/event/addpost">
           <button className="addpostbtn mt-3">Add New Post</button>
         </Link>
       </div>

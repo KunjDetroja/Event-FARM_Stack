@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import api from "../../../../api";
+import api from '../../api';
 import { toast } from "react-toastify";
 import OrganizationNavbar from "./OrganizationNavbar"
+import { error } from "jquery";
 
 function OrganizationUpdateMember() {
   const [memType, setMemType] = useState();
@@ -79,7 +80,7 @@ function OrganizationUpdateMember() {
       });
       // console.log("Response" + response.data.error);
       if (response.data.success !== false) {
-        toast.success("Login Successfully");
+        toast.success("Member details Updated Successfully");
         navigate("/organizations/members");
         console.log(response.data);
         setLFormData({
@@ -95,7 +96,7 @@ function OrganizationUpdateMember() {
           expiry_date: "",
         });
       } else {
-        toast.error(response.data);
+        toast.error(response.data.error);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -242,6 +243,7 @@ function OrganizationUpdateMember() {
                   placeholder=""
                   name="pwd"
                   value={lFormData.pwd}
+                  disabled
                 />
                 <label htmlFor="pwd" className="form-label">
                   Password

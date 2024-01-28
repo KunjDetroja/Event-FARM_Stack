@@ -34,7 +34,7 @@ function OrganizationSignup({ setOBoolean }) {
             const checking = await api.post("/organisationsignup/", lFormData);
             if (checking.data.success !== false) {
                 localStorage.setItem("organization", JSON.stringify(checking.data));
-                toast.success("Login Successfully")
+                toast.success("Signup Successfully")
                 document.getElementById('memtype').value = ""
                 document.getElementById('members').value = ""
                 setLFormData({
@@ -52,7 +52,7 @@ function OrganizationSignup({ setOBoolean }) {
                 });
                 navigate("/organization");
             } else {
-                toast.error(checking.data.data);
+                toast.error(checking.data.error);
             }
 
 

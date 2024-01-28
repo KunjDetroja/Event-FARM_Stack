@@ -48,7 +48,7 @@ function UserLogin({ setUBoolean }) {
         });
         navigate("/home");
       } else {
-        toast.error(checking.data.data);
+        toast.error(checking.data.error);
       }
       
     } catch (error) {

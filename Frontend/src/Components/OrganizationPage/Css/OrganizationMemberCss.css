@@ -18,3 +18,12 @@
     border-radius: 0.375rem;
 
   }
+
+.inputdiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .trtext{
+        width: 80px;
+    }
+}

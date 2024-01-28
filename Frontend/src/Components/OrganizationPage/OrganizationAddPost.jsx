@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import OrganizationNavbar from './OrganizationNavbar'
-import api from '../../../../api';
+import api from '../../api';
 import { toast } from "react-toastify"
 import { useNavigate } from 'react-router-dom';
 
@@ -93,7 +93,7 @@ function OrganizationAddPost() {
             const checking = await api.post("/eventpost/", lFormData);
             console.log(checking);
             if (checking.data.success !== false) {
-                toast.success("Login Successfully")
+                toast.success("Event Post Added Successfully")
                 navigate("/organizations/event");
                 setLFormData({
                     clubname: userData.clubnme,
@@ -115,7 +115,7 @@ function OrganizationAddPost() {
                     event_organizer_pnumber: '',
                 });
             } else {
-                toast.error(checking.data.data);
+                toast.error(checking.data.error);
             }
 
         }
@@ -410,7 +410,7 @@ function OrganizationAddPost() {
                         </div>
                         <div className="col-12">
                             <div className="d-grid">
-                                <button style={{ color: 'white', backgroundColor: '#0e2643', border: 'none', marginLeft: '1rem', padding: '0.3rem 0.5rem 0.3rem 0.5rem', borderRadius: '0.375rem' }} type="submit">Log in now</button>
+                                <button style={{ color: 'white', backgroundColor: '#0e2643', border: 'none', marginLeft: '1rem', padding: '0.4rem 0.5rem 0.4rem 0.5rem', borderRadius: '0.375rem' }} type="submit">Submit</button>
                             </div>
                         </div>
                     </div>

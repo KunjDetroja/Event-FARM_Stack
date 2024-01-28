@@ -27,7 +27,7 @@ function UserSignup({ setUBoolean }) {
             const checking = await api.post("/usersignup/", lFormData);
             if (checking.data.success !== false) {
                 localStorage.setItem("users", JSON.stringify(checking.data));
-                toast.success("Login Successfully")
+                toast.success("Signup Successfully")
                 setLFormData({
                     name: "",
                     email: "",
@@ -38,7 +38,7 @@ function UserSignup({ setUBoolean }) {
                 });
                 navigate("/home");
               } else {
-                toast.error(checking.data.data);
+                toast.error(checking.data.error);
               }
             
         } catch (error) {
