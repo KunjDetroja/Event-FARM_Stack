@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
-
-
-function Navbar() {
+function AdminNavbar() {
   const location = useLocation();
-  const isHomeActive = location.pathname === '/home';
+  const isHomeActive = location.pathname === '/adminhome';
   const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem("users"))
+    JSON.parse(localStorage.getItem("admin"))
   );
   const handleSignOut = async () => {
     try {
@@ -18,31 +16,30 @@ function Navbar() {
     }
   };
   return (
-    <div>
-      <nav className="navbar navbar-dark navbar-expand-lg  fixed-top " style={{ backgroundColor: "#0e2643" }}>
+    <>
+    <nav className="navbar navbar-dark navbar-expand-lg  fixed-top " style={{ backgroundColor: "#0e2643" }}>
         <div className="container-fluid">
-          <Link to="/" className="navbar-brand ms-5" >EventWiz</Link>
+          <Link className="navbar-brand ms-5" >EventWiz</Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse justify-content-end me-5" id="navbarNav">
-            <ul className="navbar-nav  ">
+            <ul className="navbar-nav ">
               <li className="nav-item">
-                <NavLink to="/home" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Home</NavLink>
+                <NavLink to="/adminhome" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Home</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/events" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Event</NavLink>
+                <NavLink to="/admin/user" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>User</NavLink>
               </li>
-              {/* <li className="nav-item">
-                <NavLink to="/home" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Home</NavLink>
-              </li> */}
               <li className="nav-item">
-                {userData?.email ? (
+                <NavLink to="/admin/organization" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Organization</NavLink>
+              </li>
+              <li className="nav-item">
+                {userData?.username ? (
                   <NavLink to="/" onClick={handleSignOut} className={`nav-link ${!isHomeActive ? 'font-weight-bold' : ''}`}>Logout {userData.username}
                   </NavLink>
                 ) : (
-                  <NavLink to="/loginregister" className={`nav-link ${!isHomeActive ? 'font-weight-bold' : ''}`}>Login/Register
-                  </NavLink>
+                  <NavLink to="*"></NavLink>
                 )}
 
               </li>
@@ -50,8 +47,8 @@ function Navbar() {
           </div>
         </div>
       </nav>
-    </div>
+    </>
   )
 }
 
-export default Navbar
+export default AdminNavbar

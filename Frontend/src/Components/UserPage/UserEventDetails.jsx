@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import OrganizationNavbar from './OrganizationNavbar'
 import {useLocation } from "react-router-dom";
-import "./Css/OrganizationEventDetailsCss.css"
+import "./Css/UserEventDetailsCss.css"
+import Navbar from '../Navbar';
 
-function OrganizationEventDetails() {
-  const [descBool, setDescBool] = useState(true);
+function UserEventDetails() {
+    const [descBool, setDescBool] = useState(true);
   const [timeBool, setTimeBool] = useState(false);
   const [dateBool, setDateBool] = useState(false);
 
@@ -35,8 +35,8 @@ function OrganizationEventDetails() {
   // console.log(postData["event_title"]);
   return (
     <>
-      <OrganizationNavbar/>
-      <div className="detailedPostBody">
+    <div><Navbar/></div>
+    <div className="detailedPostBody">
         <div class="container">
           <div class="orgcard">
             <div class="container-fliud">
@@ -161,4 +161,4 @@ function OrganizationEventDetails() {
   )
 }
 
-export default OrganizationEventDetails
+export default UserEventDetails

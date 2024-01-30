@@ -4,6 +4,10 @@ import OrganizationNavbar from './OrganizationNavbar'
 import "./Css/OrganizationMemberCss.css"
 import api from '../../api'
 import { toast } from "react-toastify"
+import {
+  IoIosArrowDropupCircle,
+  IoIosArrowDropdownCircle,
+} from "react-icons/io";
 
 function OrganizationMember() {
   const navigate = useNavigate();
@@ -11,10 +15,13 @@ function OrganizationMember() {
   const [details, setDetails] = useState()
   const [searchForm, setSearchform] = useState({
     membername: "",
+    start_date: "",
+    expiry_date: "",
   });
-  const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem("organization"))
-  );
+  const userData = JSON.parse(localStorage.getItem("organization"))
+    
+  const orignalMembers = userData.members
+  console.log(orignalMembers)
   const [filters, setFilters] = useState({
     memberid: "",
     username: "",
@@ -23,10 +30,19 @@ function OrganizationMember() {
     pnumber: "",
     gender: "",
     membertype: "",
-    start_date: "",
-    expiry_date: "",
   });
 
+  const [memType, setMemType] = useState();
+  const fetchAllMemtypedetails = async () => {
+    try {
+      const cname = userData.clubname;
+      const response = await api.post("/getmemtype/", { clubname: cname });
+      setMemType(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching details:", error);
+    }
+  };
 
 
   function formatDateForInput(dateString) {
@@ -39,7 +55,7 @@ function OrganizationMember() {
 
   const handlesorting = async (col) => {
     try {
-      const data = { "clubname": userData.clubname, "col": col, "value": bvalue }
+      const data = { "clubname": userData.clubname, "col": col["name"], "value": col["value"],"members":details }
       const checking = await api.post("/membersorting", data);
       console.log(checking);
       if (checking.data.success !== false) {
@@ -73,11 +89,12 @@ function OrganizationMember() {
       pnumber: "",
       gender: "",
       membertype: "",
-      start_date: "",
-      expiry_date: "",
+
     });
     setSearchform({
       membername: "",
+      start_date: "",
+      expiry_date: "",
     });
     fetchAllMemberdetails();
   }
@@ -95,10 +112,20 @@ function OrganizationMember() {
       console.error("Error fetching details:", error);
     }
   };
+  // useEffect(() => {
+  //   fetchAllMemberdetails();
+  //   fetchMembersFilters();
+  // }, []);
   useEffect(() => {
-    fetchAllMemberdetails();
-    fetchMembersFilters();
-  }, []);
+    fetchAllMemtypedetails()
+    // Use a timeout to wait for the user to stop typing
+    const timeoutId = setTimeout(() => {
+      fetchMembersFilters();
+    }, 100);
+    return () => clearTimeout(timeoutId);
+  }, [filters]);
+
+
   const deleteMember = async (post) => {
     const data = { "orgid": userData._id, "memberid": post.memberid }
     console.log(data)
@@ -127,13 +154,13 @@ function OrganizationMember() {
   const handlesearchSubmit = async (event) => {
     event.preventDefault();
 
-    const data = { cid: userData._id, membername: searchForm["membername"] };
+    const data = { cid: userData._id, membername: searchForm["membername"], start_date: searchForm["start_date"], expiry_date: searchForm["expiry_date"], };
     console.log("handle search submit");
     try {
       console.log(data);
       // const cname = userData._id; //Rajpath
       // // console.log(typeof cname); //string
-      const response = await api.post("/orgmemberfilterbyname/", data);
+      const response = await api.post("/orgmemberfilter", data);
       setDetails(response.data);
       console.log(response.data);
     } catch (error) {
@@ -145,7 +172,7 @@ function OrganizationMember() {
     try {
       console.log("filtering details");
       console.log(filters);
-      const tablefilters = { data: filters, orgid: userData._id };
+      const tablefilters = { "data": filters,"members" : orignalMembers };
       const response = await api.post(
         "/organisationmembertablefilters",
         tablefilters
@@ -154,14 +181,14 @@ function OrganizationMember() {
         fetchAllMemberdetails();
       }
       else if (response.data.success !== false) {
-        console.log("Response=" + response.data.error);
+        // console.log("Response=" + response.data.error);
         setDetails(response.data);
       }
       else {
-        alert(response.data.error)
+        toast.error(response.data.error)
       }
     } catch (error) {
-      alert(error);
+      toast.error(error);
     }
   };
 
@@ -171,7 +198,7 @@ function OrganizationMember() {
       ...prevFilters,
       [name]: value,
     }));
-    fetchMembersFilters();
+    // fetchMembersFilters();
   };
 
   return (
@@ -182,17 +209,43 @@ function OrganizationMember() {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-        }}>
-        <Link to="/organizations/members/addmember">
-          <button className="addpostbtn mt-3">Add New Member</button>
-        </Link>
-        <button className="addpostbtn mt-3" onClick={handleformreset}>
-          Reset
-        </button>
+        }}
+      >
+        <div>
+          <Link to="/organizations/members/addmember">
+            <button className="addpostbtn mt-3">Add New Member</button>
+          </Link>
+          <button className="addpostbtn mt-3" onClick={handleformreset}>
+            Reset
+          </button>
+        </div>
+        <div className="mt-3"></div>
         <div className="mt-3">
           <form className="form-inline my-lg-0 " onSubmit={handlesearchSubmit}>
             <div className="row">
-              <div className="col-10  p-2">
+              <div className="col-3">
+                <span> From:</span>
+                <input
+                  type="date"
+                  className="trtext"
+                  name="start_date"
+                  value={formatDateForInput(searchForm.start_date)}
+                  onChange={handleSearchInputChange}
+                  style={{ width: "10rem" }}
+                />
+              </div>
+              <div className="col-3">
+                <span>To:</span>
+                <input
+                  type="date"
+                  className="trtext"
+                  style={{ width: "10rem" }}
+                  name="expiry_date"
+                  value={formatDateForInput(searchForm.expiry_date)}
+                  onChange={handleSearchInputChange}
+                />
+              </div>
+              <div className="col-4 p-2">
                 <input
                   className="form-control"
                   name="membername"
@@ -205,7 +258,7 @@ function OrganizationMember() {
               </div>
               <div className="col-2 p-2">
                 <button
-                  className="btn btn-outline-success my-2 my-sm-0 membersearchicon"
+                  className="addpostbtn pt-2 pb-2"
                   type="submit"
                 >
                   <svg
@@ -234,17 +287,77 @@ function OrganizationMember() {
                   <th scope="col" className='tablehead align-middle'>Sno</th>
                   <th scope="col" className='tablehead align-middle'>ID</th>
                   <th scope="col" className='tablehead align-middle'>Username</th>
-                  <th scope="col" onClick={() => handlesorting("name")} className='tablehead align-middle'>Name</th>
+                  <th
+                    scope="col"
+                    className="tablehead align-middle"
+                  // style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+                  >
+                    <span className='mx-2'>Name{" "}</span>
+                    <span
+                    // style={{
+                    //   display: "inline-flex",
+                    //   flexDirection: "column",
+                    //   alignItems: "center",
+                    //   marginLeft: "10px"
+                    // }}
+                    >
+                      <span>
+                        <IoIosArrowDropupCircle onClick={() => handlesorting({"name":"name","value":true})} />
+                      </span>
+                      <span >
+                        <IoIosArrowDropdownCircle onClick={() => handlesorting({"name":"name","value":false})} />
+                      </span>
+                    </span>
+                  </th>
                   <th scope="col" className='tablehead align-middle'>Email</th>
-                  <th scope="col" onClick={() => handlesorting("pnumber")} className='tablehead align-middle'>Number</th>
+                  <th
+                    scope="col"
+                    className="tablehead align-middle"
+                  >
+                    <span className='mx-2'>Number</span>
+                    <span
+                    >
+                      <span>
+                        <IoIosArrowDropupCircle onClick={() => handlesorting({"name":"pnumber","value":true})} />
+                      </span>
+                      <span >
+                        <IoIosArrowDropdownCircle onClick={() => handlesorting({"name":"pnumber","value":false})} />
+                      </span>
+                    </span>
+                  </th>
                   <th scope="col" className='tablehead align-middle'>Gender</th>
                   <th scope="col" className='tablehead align-middle'>Type</th>
-                  <th scope="col" onClick={() => handlesorting("start_date")} className='tablehead align-middle'>Start date</th>
-                  <th scope="col" onClick={() => handlesorting("expiry_date")} className='tablehead align-middle'>Expiry date</th>
+                  <th
+                    scope="col"
+                    className="tablehead align-middle"
+                  >
+                    <span className='mx-2'>Start date</span>
+                    <span>
+                      <span>
+                        <IoIosArrowDropupCircle onClick={() => handlesorting({"name":"start_date","value":true})} />
+                      </span>
+                      <span >
+                        <IoIosArrowDropdownCircle onClick={() => handlesorting({"name":"start_date","value":false})} />
+                      </span>
+                    </span>
+                  </th>
+                  <th
+                    scope="col"
+                    className="tablehead align-middle"
+                  >
+                    <span className='mx-2'>Expiry date</span>
+                    <span
+                    >
+                      <span>
+                        <IoIosArrowDropupCircle onClick={() => handlesorting({"name":"expiry_date","value":true})} />
+                      </span>
+                      <span >
+                        <IoIosArrowDropdownCircle onClick={() => handlesorting({"name":"expiry_date","value":false})} />
+                      </span>
+                    </span>
+                  </th>
                   <th scope="col" className='tablehead align-middle'>Update</th>
                   <th scope="col" className='tablehead align-middle'>Delete</th>
-                  {/* <th scope="col">Username</th>
-                  <th scope="col">Password</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -289,47 +402,51 @@ function OrganizationMember() {
                     <div type="number" className="inputdiv">
                       <input className='trtext'
                         name="email"
-                        value={filters.email}
+                        value={filters.pnumber}
                         onChange={handleFilterInputChange}
                       />
                     </div>
                   </td>
                   <td>
                     <div type="text" className="inputdiv">
-                      <input className='trtext'
+                    <select
+                        onChange={handleFilterInputChange}
+                        className="trtext form-select"
+                        style={{ width: "7rem" }}
+                        id="gender"
                         name="gender"
                         value={filters.gender}
-                        onChange={handleFilterInputChange}
-                      />
+                      >
+                        <option value="">Gender</option>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                      </select>
                     </div>
                   </td>
                   <td>
                     <div type="text" className="inputdiv">
-                      <input className='trtext'
+                    <select
+                        onChange={handleFilterInputChange}
+                        className="trtext form-select"
+                        // style={{ width: "10rem" }}
+                        id="membertype"
                         name="membertype"
                         value={filters.membertype}
-                        onChange={handleFilterInputChange}
-                      />
+                      >
+                        <option value="">Type</option>
+                        {memType?.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </td>
-                  <td>
-                    <div type="text" className="inputdiv">
-                      <input type='date' className='trtext'
-                        name="start_date"
-                        value={formatDateForInput(filters.start_date)}
-                        onChange={handleFilterInputChange}
-                        style={{ width: "102px" }}
-                      />
-                    </div>
+                  <td className='trtext'>
+                    --
                   </td>
-                  <td>
-                    <div type="text" className="inputdiv">
-                      <input type='date' className='trtext' style={{ width: "102px" }}
-                        name="expiry_date"
-                        value={formatDateForInput(filters.expiry_date)}
-                        onChange={handleFilterInputChange}
-                      />
-                    </div>
+                  <td className='trtext'>
+                    --
                   </td>
                   <td className='trtext'>--</td>
                   <td className='trtext'>--</td>

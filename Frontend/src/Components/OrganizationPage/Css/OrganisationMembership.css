@@ -1,0 +1,12 @@
+.memtypesavesubmitbtn {
+  color: white;
+  background-color: #0e2643;
+  border: none;
+  margin-left: 1rem;
+  padding: 0.8rem 7rem;
+  border-radius: 0.375rem;
+}
+
+.memtypesavesubmitbtn:hover {
+  background: green;
+}

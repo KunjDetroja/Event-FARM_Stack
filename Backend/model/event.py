@@ -10,7 +10,7 @@ class User(BaseModel):
     username: str
     pwd: str
     memberid: Optional[str] = None
-    membertype : Optional[str] = None
+    membertype : Optional[str] = "Public"
     clubname : Optional[str] = None
     start_date : Optional[date] = None  
     expiry_date : Optional[date] = None
@@ -19,6 +19,8 @@ class User(BaseModel):
 class Organization(BaseModel):
     clubname: str
     ownname: str
+    logo : str
+    background_image : str
     email: str
     address: str
     city: str
@@ -26,6 +28,7 @@ class Organization(BaseModel):
     desc: str
     memtype: list
     members: list
+    memapplied : list
     username: str
     pwd: str
 
@@ -47,4 +50,5 @@ class EventPost(BaseModel):
     event_organizer_name: str
     event_organizer_email: str
     event_organizer_pnumber: int
+    participate : list
     

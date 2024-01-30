@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { toast } from "react-toastify"
 import OrganizationNavbar from './OrganizationNavbar'
 import "./Css/OrganizationEventCss.css"
 import $ from "jquery"
@@ -68,14 +69,14 @@ function OrganizationEvent() {
     // Now you can use filteredFormData in your API call
     try {
       console.log("Inside try for api calling:")
-      const checking = await api.post("/postfilters/", filteredFormData);
+      const checking = await api.post(`/postfilters/${userData.clubname}`, filteredFormData);
       console.log(checking);
       if (checking.data.success !== false) {
         console.log(checking.data)
         setDetails(checking.data)
       }
       else {
-        alert(checking.data.error)
+        toast.error(checking.data.error)
       }
 
       // Rest of your code...

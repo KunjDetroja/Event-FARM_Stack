@@ -2,11 +2,15 @@ import React, { useState } from 'react'
 import api from '../../../api';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+// import {useDispatch,useSelector} from "react-redux"
+// import { orglogin,orglogout } from '../../../ReduxStore/AuthSlice';
 
 
 function OrganizationLogin({ setOBoolean }) {
+  // const auth = useSelector(state => state.data)
+  // const status = useSelector(state => state.orgstatus)
   const navigate = useNavigate();
-
+  // const dispatch = useDispatch()
   const [lFormData, setLFormData] = useState({
     username: "",
     pwd: "",
@@ -23,9 +27,14 @@ function OrganizationLogin({ setOBoolean }) {
     event.preventDefault();
     try {
       const checking = await api.post("/organisationlogin/", lFormData);
-      console.log(checking.data)
+      // const data = checking.data
+      // console.log(data)
+
       if (checking.data.success !== false) {
         localStorage.setItem("organization", JSON.stringify(checking.data));
+        // dispatch(orglogin({data}))
+        // console.log(auth)
+        // console.log(status)
         toast.success("Login Successfully")
         setLFormData({
           username: "",

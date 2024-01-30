@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './Components/Home';
 import Mainpage from './Components/Mainpage';
@@ -14,30 +14,53 @@ import OrganizationAddMember from './Components/OrganizationPage/OrganizationAdd
 import OrganizationUpdateMember from './Components/OrganizationPage/OrganizationUpdateMember';
 import OrganizationMemberships from './Components/OrganizationPage/OrganizationMemberships';
 import OrganizationMemberApplied from './Components/OrganizationPage/OrganizationMemberApplied';
-import OrganizationAddMembership from './Components/OrganizationPage/OrganizationAddMembership';
+import AdminLogin from './Components/Admin/AdminLogin';
+import AdminHome from './Components/Admin/AdminHome';
+import AdminUser from './Components/Admin/AdminUser';
+import AdminOrganization from './Components/Admin/AdminOrganization';
+import UserEvent from './Components/UserPage/UserEvent';
+import UserEventDetails from './Components/UserPage/UserEventDetails';
+import UserEventParticipate from './Components/UserPage/UserEventParticipate';
 
 
 const App = () => {
+  const [orgData, setOrgData] = useState(
+    JSON.parse(localStorage.getItem("organization"))
+  );
 
   return (
     <>
-  <ToastContainer/>
-        <Router>
+      <ToastContainer />
+      <Router>
         <Routes>
-          <Route path="/" element={<Mainpage/>} />
-          <Route path="/loginregister" element={<LoginRegister/>} />
-          <Route path="/home" element={<Home/>} />
-          <Route path="/organization" element={<OrganizationMainPage/>} />
-          <Route path="/organizations/event" element={<OrganizationEvent/>} />
-          <Route path="/organizations/event/eventdetails" element={<OrganizationEventDetails/>} />
-          <Route path="/organizations/event/addpost" element={<OrganizationAddPost/>} />
-          <Route path="/organizations/members" element={<OrganizationMembers/>} />
-          <Route path="/organizations/members/addmember" element={<OrganizationAddMember/>} />
-          <Route path="/organizations/members/updatemember" element={<OrganizationUpdateMember/>} />
-          <Route path="/organizations/membership" element={<OrganizationMemberships/>} />
-          <Route path="/organizations/membership/addmembership" element={<OrganizationAddMembership/>} />
-          <Route path="/organizations/memberapplied" element={<OrganizationMemberApplied/>} />
-          <Route path="*" element={<NotFound/>} />
+
+          <Route path="/" element={<Mainpage />} />
+          <Route path="/loginregister" element={<LoginRegister />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/events" element={<UserEvent />} />
+          <Route path="/event/details" element={<UserEventDetails />} />
+          <Route path="/event/partcipate" element={<UserEventParticipate />} />
+          {/* {orgData ? (
+            <> */}
+              <Route path="/organization" element={<OrganizationMainPage />} />
+              <Route path="/organizations/event" element={<OrganizationEvent />} />
+              <Route path="/organizations/event/eventdetails" element={<OrganizationEventDetails />} />
+              <Route path="/organizations/event/addpost" element={<OrganizationAddPost />} />
+              <Route path="/organizations/members" element={<OrganizationMembers />} />
+              <Route path="/organizations/members/addmember" element={<OrganizationAddMember />} />
+              <Route path="/organizations/members/updatemember" element={<OrganizationUpdateMember />} />
+              <Route path="/organizations/membership" element={<OrganizationMemberships />} />
+              <Route path="/organizations/memberapplied" element={<OrganizationMemberApplied />} />
+            {/* </>
+          ) : (
+            <Route path="*" element={<NotFound />} />
+          )} */}
+
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/adminhome" element={<AdminHome />} />
+          <Route path="/admin/user" element={<AdminUser />} />
+          <Route path="/admin/organization" element={<AdminOrganization />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </>
