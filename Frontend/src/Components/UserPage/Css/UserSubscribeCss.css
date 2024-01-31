@@ -1,0 +1,29 @@
+.addorgbtn{
+    color: white;
+    background-color: #0e2643;
+    border: none;
+    /* margin-left: 1rem; */
+    padding: 0.33rem 0.66rem 0.55rem 0.66rem;
+    border-radius: 0.375rem;
+    /* margin-bottom: 5px; */
+    margin-top: 0.44rem;
+  }
+  
+  .testimonial-card .card-up {
+    height: 120px;
+    overflow: hidden;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+  }
+  
+  .aqua-gradient {
+    background: linear-gradient(40deg, #2096ff, #05ffa3) !important;
+  }
+  
+  .testimonial-card .avatar {
+    width: 120px;
+    margin-top: -60px;
+    overflow: hidden;
+    border: 5px solid #fff;
+    border-radius: 50%;
+  }

@@ -30,7 +30,7 @@ function UserEvent1() {
     };
 
     const [searchForm, setSearchform] = useState({
-        name: "",
+        event_title: "",
     });
 
     const [modalEaseIn, setModalEaseIn] = useState("");
@@ -48,6 +48,9 @@ function UserEvent1() {
         fetchAllClubname();
         fetchAllPostdetails();
         fetchAllMemTypedetails();
+        localStorage.removeItem('postid');
+        localStorage.removeItem('orgname');
+        localStorage.removeItem('memtype');
 
         $(".modal").each(function () {
             $(this).on("show.bs.modal", function () {
@@ -72,7 +75,8 @@ function UserEvent1() {
     const fetchAllPostdetails = async () => {
         console.log("fetching post function")
         try {
-            const response = await api.get("/fetchingallpostforuser/");
+            console.log(userData.username)
+            const response = await api.post(`/fetchingallpostforuser/${userData.username}`);
             setDetails(response.data);
             //   console.log(response.data);
         } catch (error) {
@@ -82,7 +86,6 @@ function UserEvent1() {
 
     const navigate = useNavigate();
     const handlepostdetails = (post) => {
-        // console.log(JSON.stringify(post))
         navigate("/event/details", {
             state: JSON.stringify(post),
         });
@@ -160,7 +163,7 @@ function UserEvent1() {
             clubname: "",
         });
         setSearchform({
-            name: "",
+            event_title: "",
         });
         fetchAllPostdetails();
     };
@@ -174,25 +177,23 @@ function UserEvent1() {
     };
     const handlesearchSubmit = async (event) => {
         event.preventDefault();
-
-        // const data = { "title": searchForm["event_title"] };
+        const data = { "title": searchForm["event_title"], "uname": userData.username };
         console.log("handle search submit");
         try {
-            console.log("hi");
-            // const cname = orgData._id; //Rajpath
-            // // console.log(typeof cname); //string
-            //   const response = await api.post("/organisationeventposts/",data);
-            //   setDetails(response.data);
-            // console.log(response.data);
+            const response = await api.post("/postsearchbyuser", data);
+            setDetails(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
     };
-    
-    const handleParticipate = async (id) =>{
+
+    const handleParticipate = async (id) => {
         localStorage.setItem("postid", JSON.stringify(id));
         navigate("/event/partcipate")
-
+    }
+    const handleSubscribe = async (post) => {
+        navigate("/subscribe/form1", {state: JSON.stringify(post)})
     }
     // {
     //   "event_start_date": "",
@@ -208,16 +209,16 @@ function UserEvent1() {
     return (
         <>
             <div><Navbar /></div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-                <div className="mt-0">
-                    <form className="form-inline my-lg-0 " onSubmit={handlesearchSubmit}>
-                        <div className="row">
+            <div>
+                <div className="mt-2 me-5 d-flex flex-column align-items-end ">
+                    <form className="form-inline my-lg-0" onSubmit={handlesearchSubmit}>
+                        <div className="row" >
                             <div className="col-10 p-2">
                                 <input
                                     className="form-control"
                                     name="event_title"
                                     type="text"
-                                    placeholder="Search"
+                                    placeholder="Search by Title"
                                     aria-label="Search"
                                     onChange={handleSearchInputChange}
                                     value={searchForm.event_title}
@@ -225,7 +226,7 @@ function UserEvent1() {
                             </div>
                             <div className="col-2 p-2">
                                 <button
-                                    className="btn btn-outline-success my-2 my-sm-0 membersearchicon"
+                                    className="addpostbtn pt-2 pb-2"
                                     type="submit"
                                 >
                                     <svg
@@ -257,7 +258,7 @@ function UserEvent1() {
                                     cursor: "pointer",
                                 }}
                             >
-                                <div className="d-flex flex-column align-items-end ">
+                                <div className="d-flex flex-column align-items-end">
                                     <FaArrowCircleLeft
                                         className="mt-2"
                                         onClick={toggleCol2Visibility}
@@ -497,13 +498,11 @@ function UserEvent1() {
                                                                         <strong> {post.event_end_date}</strong>
                                                                     </p>
 
-                                                                    {post.type === userData.membertype || post.type === "Public" ? (
+                                                                    {(post.type === userData.membertype && post.clubname === userData.clubname) || post.type === "Public" ? (
 
                                                                         <button
                                                                             className="deletepostbtn"
-                                                                            
                                                                             onClick={() => handleParticipate(post._id)}
-
                                                                         >
                                                                             Participate
                                                                         </button>
@@ -511,7 +510,8 @@ function UserEvent1() {
 
                                                                         <button
                                                                             className="deletepostbtn"
-                                                                        // disabled={post.type === userData["membertype"]}
+                                                                            onClick={() => handleSubscribe(post)}
+
                                                                         >
                                                                             Subscribe
                                                                         </button>

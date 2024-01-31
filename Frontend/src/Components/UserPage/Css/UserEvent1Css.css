@@ -1,4 +1,4 @@
-/* height: 39rem; */
+
 .addpostbtn {
     color: white;
     background-color: #0e2643;
@@ -65,16 +65,7 @@
     margin-top: -2px;
 }
 
-/* .note {
-          position: absolute;
-          top: 8px;
-          left: 8px;
-          padding: 4px 8px;
-          border-radius: 0.25rem;
-          background-color: #c89b3f;
-          font-size: 14px;
-          font-weight: 700;
-        } */
+
 
 @media (min-width: 40rem) {
     .usereventscards_item {
@@ -83,7 +74,6 @@
 
     .usereventscard {
         width: calc(50% - 16px);
-        /* Adjust the width based on the number of cards in a row */
     }
 }
 
@@ -94,7 +84,6 @@
 
     .usereventscard {
         width: calc(33.3333% - 16px);
-        /* Adjust the width based on the number of cards in a row */
     }
 }
 

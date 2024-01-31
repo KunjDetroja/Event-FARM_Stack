@@ -21,7 +21,7 @@ function Navbar() {
     <div>
       <nav className="navbar navbar-dark navbar-expand-lg  fixed-top " style={{ backgroundColor: "#0e2643" }}>
         <div className="container-fluid">
-          <Link to="/" className="navbar-brand ms-5" >EventWiz</Link>
+          <Link to="/home" className="navbar-brand ms-5" >EventWiz</Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -33,9 +33,12 @@ function Navbar() {
               <li className="nav-item">
                 <NavLink to="/events" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Event</NavLink>
               </li>
-              {/* <li className="nav-item">
-                <NavLink to="/home" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Home</NavLink>
-              </li> */}
+              <li className="nav-item">
+                <NavLink to="/subscribe" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Subscribe</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/partcipate" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Partcipated</NavLink>
+              </li>
               <li className="nav-item">
                 {userData?.email ? (
                   <NavLink to="/" onClick={handleSignOut} className={`nav-link ${!isHomeActive ? 'font-weight-bold' : ''}`}>Logout {userData.username}

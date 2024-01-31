@@ -14,6 +14,7 @@ function UserEventParticipate() {
         email: userData.email,
         pnumber: userData.pnumber,
         gender: userData.gender,
+        username: userData.username,
         age: "",
         upi_id: "",
         city: "",
@@ -35,19 +36,21 @@ function UserEventParticipate() {
             // console.log(checking);
             if (checking.data.success !== false) {
               toast.success(checking.data.data)
+              setLFormData({
+                  name: "",
+                  email: "",
+                  pnumber: "",
+                  gender: "",
+                  username: "",
+                  age: "",
+                  upi_id: "",
+                  city: "",
+              });
+              localStorage.removeItem('postid');
               navigate("/events");
             } else {
               toast.error(checking.data.error)
             }
-            setLFormData({
-                name: "",
-                email: "",
-                pnumber: "",
-                gender: "",
-                age: "",
-                upi_id: "",
-                city: "",
-            });
         }
         catch (error) {
             console.error("Error submitting form:", error);

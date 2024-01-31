@@ -28,7 +28,7 @@ class Organization(BaseModel):
     desc: str
     memtype: list
     members: list
-    memapplied : list
+    memapplied : Optional[list] = []
     username: str
     pwd: str
 
@@ -50,5 +50,5 @@ class EventPost(BaseModel):
     event_organizer_name: str
     event_organizer_email: str
     event_organizer_pnumber: int
-    participate : list
+    participate : Optional[list] = []
     

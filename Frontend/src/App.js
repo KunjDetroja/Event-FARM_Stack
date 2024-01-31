@@ -21,6 +21,11 @@ import AdminOrganization from './Components/Admin/AdminOrganization';
 import UserEvent from './Components/UserPage/UserEvent';
 import UserEventDetails from './Components/UserPage/UserEventDetails';
 import UserEventParticipate from './Components/UserPage/UserEventParticipate';
+import UserSubscribe from './Components/UserPage/UserSubscribe';
+import UserSubscribeOrgDetails from './Components/UserPage/UserSubscribeOrgDetails';
+import UserSubscribeForm from './Components/UserPage/UserSubscribeForm';
+import UserParticipatedEvents from './Components/UserPage/UserParticipatedEvents';
+import UserSubscribeForm1 from './Components/UserPage/UserSubscribeForm1';
 
 
 const App = () => {
@@ -38,6 +43,11 @@ const App = () => {
           <Route path="/loginregister" element={<LoginRegister />} />
           <Route path="/home" element={<Home />} />
           <Route path="/events" element={<UserEvent />} />
+          <Route path="/subscribe" element={<UserSubscribe />} />
+          <Route path="/partcipate" element={<UserParticipatedEvents   />} />
+          <Route path="/subscribe/orgdetails" element={<UserSubscribeOrgDetails />} />
+          <Route path="/subscribe/form" element={<UserSubscribeForm />} />
+          <Route path="/subscribe/form1" element={<UserSubscribeForm1 />} />
           <Route path="/event/details" element={<UserEventDetails />} />
           <Route path="/event/partcipate" element={<UserEventParticipate />} />
           {/* {orgData ? (

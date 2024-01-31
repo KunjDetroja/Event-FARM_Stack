@@ -21,7 +21,7 @@ function OrganizationNavbar() {
         <div>
             <nav className="navbar navbar-dark navbar-expand-lg  fixed-top " style={{backgroundColor:"#0e2643"}}>
                 <div className="container-fluid">
-                    <Link to="/" className="navbar-brand ms-5" >EventWiz</Link>
+                    <Link to="/organization" className="navbar-brand ms-5" >EventWiz</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

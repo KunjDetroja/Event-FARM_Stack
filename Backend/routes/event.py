@@ -1,10 +1,19 @@
 from fastapi import APIRouter,HTTPException
+from fastapi.responses import JSONResponse
 from config.db import conn
 from model.event import *
 from schemas.event import serializeDict,serializeList
 from bson import ObjectId
 import re
+# from email.message import EmailMessage
+# import smtplib
+# from dotenv import load_dotenv
+# import os
 
+# load_dotenv()
+
+# gmail_user = os.getenv("GMAIL_USER")
+# gmail_password = os.getenv("GMAIL_PASSWORD")
 
 event = APIRouter()
 
@@ -111,11 +120,11 @@ async def add_member(id:str,member:User):
         data_dict1 = serializeList(org)[0]["members"]
         for i in data_dict1:
             if (i["username"] == data_dict["username"]):
-                return {"data":"Username already Exists","success":False}
+                return {"error":"Username already Exists","success":False}
             if (i["memberid"] == data_dict["memberid"]):
-                return {"data":"Member ID already Exists","success":False}
+                return {"error":"Member ID already Exists","success":False}
     if data_dict["membertype"] == '':
-        return {"data":"Select Membership Type","success":False}
+        return {"error":"Select Membership Type","success":False}
     del data_dict["clubname"]
     data_dict["expiry_date"] = data_dict["expiry_date"].strftime("%Y-%m-%d")
     data_dict["expiry_date"] = datetime.strptime(data_dict["expiry_date"], "%Y-%m-%d")
@@ -452,15 +461,26 @@ async def check_user(data:dict):
         return {"error":"Invalid Username , Password and Clubname","success":False}
 
 # Get all Post For Users
-@event.get("/fetchingallpostforuser")
-async def fetch_all_post_userside():
+@event.post("/fetchingallpostforuser/{uname}")
+async def fetch_all_post_userside(uname:str):
     result = conn.event.post.find()
+    posts = []
     if (result != []):
         allpost = serializeList(result)
         for i in allpost:
-            i["event_start_date"] = i["event_start_date"].strftime("%d-%m-%Y")
-            i["event_end_date"] = i["event_end_date"].strftime("%d-%m-%Y")
-        return allpost
+            if len(i["participate"]) !=0:
+                for j in i["participate"]:
+                    if j["username"] == uname:
+                        break
+                else:
+                    i["event_start_date"] = i["event_start_date"].strftime("%d-%m-%Y")
+                    i["event_end_date"] = i["event_end_date"].strftime("%d-%m-%Y")
+                    posts.append(i)
+            else:
+                i["event_start_date"] = i["event_start_date"].strftime("%d-%m-%Y")
+                i["event_end_date"] = i["event_end_date"].strftime("%d-%m-%Y")
+                posts.append(i)
+        return (posts)
     else:
         return {"error":"No post found","success":False}
 
@@ -529,6 +549,132 @@ async def event_participate(id:str,data:dict):
     else:
         return {"error": "Event Not Found", "success": False}
 
+# Post Search by User using Title
+@event.post("/postsearchbyuser")
+async def post_search_user(data : dict):
+    result = conn.event.post.find()
+    posts = []
+    # print(data)
+    regex_pattern = re.compile(f"^{re.escape(data['title'])}.*", re.IGNORECASE)
+    # print(re.match(regex_pattern,title))
+    
+    if (result != []):
+        allpost = serializeList(result)
+        for i in allpost:
+            if re.match(regex_pattern,i["event_title"]):
+                if len(i["participate"]) !=0:
+                    for j in i["participate"]:
+                        if j["username"] == data["uname"]:
+                            break
+                    else:
+                        i["event_start_date"] = i["event_start_date"].strftime("%d-%m-%Y")
+                        i["event_end_date"] = i["event_end_date"].strftime("%d-%m-%Y")
+                        posts.append(i)
+                else:
+                    i["event_start_date"] = i["event_start_date"].strftime("%d-%m-%Y")
+                    i["event_end_date"] = i["event_end_date"].strftime("%d-%m-%Y")
+                    posts.append(i)
+        return posts
+
+# Get All Organization for Subscribe
+@event.get("/getallorganizatonforuser")
+async def getall_organization():
+    org = conn.event.organization.find()
+    if org:
+        org1 = serializeList(org)
+        return org1
+    else:
+        return {"error": "Organization Not Found", "success": False}
+
+# USer Search Organization by Name
+@event.post("/usersearchingorgbyname")
+async def search_org_byname(data:dict):
+    search_query = data["clubname"]
+    regex_pattern = re.compile(f"{re.escape(search_query)}.*", re.IGNORECASE)
+    result = conn.event.organization.find({"clubname": {"$regex": regex_pattern}})
+
+    result = serializeList(result)
+    if result:
+        # print(result)
+        return result
+    else:
+        return {"error":"No organisation found","success":False}
+    
+# User Subscribe 
+@event.put('/usersubscribe')
+async def user_subscribe(user: User):
+    
+    appliedmem = dict(user)
+    appliedmem["start_date"] = appliedmem["start_date"].strftime("%Y-%m-%d")
+    appliedmem["expiry_date"] = appliedmem["expiry_date"].strftime("%Y-%m-%d")
+    appliedmem["start_date"] = datetime.strptime(appliedmem["start_date"], "%Y-%m-%d")
+    appliedmem["expiry_date"] = datetime.strptime(appliedmem["expiry_date"], "%Y-%m-%d")
+    # print(appliedorg)
+    flag =0
+    orgdict = serializeDict(conn.event.organization.find_one({"clubname":appliedmem["clubname"]}))
+    # return orgdict
+    if len(orgdict) !=0:
+        orgmem = orgdict["members"]
+        orgapplied = orgdict["memapplied"]
+        if len(orgmem) !=0:
+            for i in orgmem:
+                if i["username"] == appliedmem["username"]:
+                    return {"error":"Username already Exist", "success":False}
+            else:
+                if len(orgapplied) !=0:
+                    for j in orgapplied:
+                        if j["username"] == appliedmem["username"] and j["email"] == appliedmem["email"] and j["pnumber"] == appliedmem["pnumber"]:
+                            return {"error":"Similar Username,MemberId,Email and Phone Number are already Applied", "success":False}
+                    else:
+                        orgapplied.append(appliedmem)
+                        conn.event.organization.update_one({"clubname":appliedmem["clubname"]}, {"$set":  {"memapplied": orgapplied}})
+                        return {"data":"Applied For Subscription Successfully.","success":True}
+                else:
+                    orgapplied.append(appliedmem)
+                    conn.event.organization.update_one({"clubname":appliedmem["clubname"]}, {"$set":  {"memapplied": orgapplied}})
+                    return {"data":"Applied For Subscription Successfully.","success":True}
+        else:
+            orgapplied.append(appliedmem)
+            conn.event.organization.update_one({"clubname":appliedmem["clubname"]}, {"$set":  {"memapplied": orgapplied}})
+            return {"data":"Applied For Subscription Successfully.","success":True}
+    else:
+        return {"error":"Organization Not Found", "success":False}
+
+# Get User Participated Events
+@event.post("/userparticipated/{uname}")
+async def user_participated(uname:str):
+    post = conn.event.post.find()
+    allpost=[]
+    if post:
+        postlist = serializeList(post)
+        for singlepost in postlist:
+            if len(singlepost)!=0:
+                for singlepart in singlepost["participate"]:
+                    if singlepart["username"] == uname:
+                        singlepost["event_start_date"] = singlepost["event_start_date"].strftime("%d-%m-%Y")
+                        singlepost["event_end_date"] = singlepost["event_end_date"].strftime("%d-%m-%Y")
+                        allpost.append(singlepost)
+        if len(allpost)!=0:
+            return allpost
+        else:
+            return {"error":"You are not Participated in any Event", "success":False}
+    else:
+        return {"error":"Post Not Found", "success":False}
+    
+# Get Membership Type using Clubname and Username
+@event.post("/filtermemtype")
+async def filter_memtype(data : dict):
+    org = serializeDict(conn.event.organization.find_one({"clubname":data["clubname"]}))
+    if len(org) !=0:
+        memtype = org["memtype"]
+        # print(memtype)
+        for singlemember in org["members"]:
+            if singlemember["username"] == data["username"]:
+                memtype = [item for item in memtype if item["type"] != singlemember["membertype"]]
+        return memtype
+
+
+    
 
 
 # General Routes ---------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -556,3 +702,27 @@ async def  all_membershiptype():
                         allmemtype.append(j["type"])
     return allmemtype
     
+# Send Email 
+# @event.post("/send-email")
+# async def send_email(to: str, subject: str, message: str):
+#     try:
+#         # Create an EmailMessage
+#         email = EmailMessage()
+#         email.set_content(message)
+#         email["Subject"] = subject
+#         email["From"] = gmail_user
+#         email["To"] = to
+
+#         # Connect to Gmail SMTP server
+#         with smtplib.SMTP("smtp.gmail.com", 587) as server:
+#             server.starttls()
+#             # Log in to the Gmail account
+#             server.login(gmail_user, gmail_password)
+#             # Send the email
+#             server.send_message(email)
+
+#         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
+#     except smtplib.SMTPAuthenticationError as e:
+#         raise HTTPException(status_code=401, detail=str(e))
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
