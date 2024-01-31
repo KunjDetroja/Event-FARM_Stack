@@ -1,10 +1,11 @@
 from fastapi import APIRouter,HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse,FileResponse
 from config.db import conn
 from model.event import *
 from schemas.event import serializeDict,serializeList
 from bson import ObjectId
 import re
+# import qrcode
 # from email.message import EmailMessage
 # import smtplib
 # from dotenv import load_dotenv
@@ -726,3 +727,32 @@ async def  all_membershiptype():
 #         raise HTTPException(status_code=401, detail=str(e))
 #     except Exception as e:
 #         raise HTTPException(status_code=500, detail=str(e))
+
+# @event.get("/generate-qr")
+# async def generate_qr(data: str):
+#     try:
+#         # Generate QR code
+#         qr = qrcode.QRCode(
+#             version=1,
+#             error_correction=qrcode.constants.ERROR_CORRECT_L,
+#             box_size=10,
+#             border=4,
+#         )
+#         qr.add_data(data)
+#         qr.make(fit=True)
+
+#         # Create a QR code image
+#         img = qr.make_image(fill_color="black", back_color="white")
+
+#         # Save the image temporarily
+#         img_path = "temp_qr.png"
+#         img.save(img_path)
+
+#         # Return the QR code image as a response
+#         return FileResponse(img_path, media_type="image/png")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+    # finally:
+    #     # Clean up: Delete the temporary image file
+    #     if img_path and os.path.exists(img_path):
+    #         os.remove(img_path)
