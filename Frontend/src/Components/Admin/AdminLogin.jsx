@@ -36,7 +36,7 @@ function AdminLogin() {
                     username: "",
                     pwd: "",
                 });
-                navigate("/adminhome");
+                navigate("/admin/home");
             } else {
                 toast.error(checking.data.error);
             }

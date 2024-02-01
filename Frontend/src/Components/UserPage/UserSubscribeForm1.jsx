@@ -20,8 +20,6 @@ function UserSubscribeForm1() {
         username: "",
         pwd: "",
         membertype: postData.type,
-        start_date: "",
-        expiry_date: "",
 
     });
 
@@ -58,8 +56,6 @@ function UserSubscribeForm1() {
                     username: "",
                     pwd: "",
                     membertype: "",
-                    start_date: "",
-                    expiry_date: "",
                 });
             } else {
                 toast.error(checking.data.error);
@@ -196,38 +192,6 @@ function UserSubscribeForm1() {
                                 />
                                 <label htmlFor="pwd" className="form-label">
                                     Password
-                                </label>
-                            </div>
-                        </div>
-                        <div className="col-6">
-                            <div className="form-floating mb-3">
-                                <input
-                                    onChange={handleInputChange}
-                                    type="date"
-                                    className="form-control"
-                                    id="start_date"
-                                    placeholder=""
-                                    name="start_date"
-                                    value={formatDateForInput(lFormData.start_date)}
-                                />
-                                <label htmlFor="start_date" className="form-label">
-                                    Start Date
-                                </label>
-                            </div>
-                        </div>
-                        <div className="col-6">
-                            <div className="form-floating mb-3">
-                                <input
-                                    onChange={handleInputChange}
-                                    type="date"
-                                    className="form-control"
-                                    id="expiry_date"
-                                    placeholder=""
-                                    name="expiry_date"
-                                    value={formatDateForInput(lFormData.expiry_date)}
-                                />
-                                <label htmlFor="expiry_date" className="form-label">
-                                    Expiry Date
                                 </label>
                             </div>
                         </div>

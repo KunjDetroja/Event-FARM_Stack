@@ -1,33 +1,45 @@
-// AdminUser
+// AdminAuthority
 import React, { useState, useEffect } from "react";
 import AdminNavbar from "./AdminNavbar";
 // import "../../css/OrganisationEvent/memberdetails.css";
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import {
   IoIosArrowDropupCircle,
   IoIosArrowDropdownCircle,
 } from "react-icons/io";
+import { GrPowerReset } from "react-icons/gr";
 import api from "../../api";
 
-function AdminUser() {
+
+function AdminAuthority() {
   const [bvalue, setBValue] = useState(true);
-  const [shownewusers, setNewusers] = useState(false);
   const [details, setDetails] = useState();
   const [searchForm, setSearchform] = useState({
-    membername: "",
-    start_date: "",
-    expiry_date: "",
+    clubname: "",
   });
-  // const [userData, setOrgData] = useState();
+  // const [orgData, setOrgData] = useState(
+  //   JSON.parse(localStorage.getItem("organisers"))
+  // );
   const [filters, setFilters] = useState({
-    memberid: "",
+    clubname: "",
     username: "",
-    name: "",
+    ownname: "",
     email: "",
     pnumber: "",
-    gender: "",
-    membertype: "",
   });
+  const [memType, setMemType] = useState();
+
+  const fetchAllMemtypedetails = async () => {
+    try {
+      // const cname = orgData.clubname;
+      // const response = await api.post("/getmemtype/", { clubname: cname });
+      // setMemType(response.data);
+      // console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching details:", error);
+    }
+  };
 
   function formatDateForInput(dateString) {
     const date = new Date(dateString);
@@ -55,46 +67,85 @@ function AdminUser() {
   };
 
   const handleformreset = () => {
+    fetchAllMemberdetails();
     setFilters({
-      memberid: "",
+      clubname: "",
       username: "",
-      name: "",
+      ownname: "",
       email: "",
       pnumber: "",
-      gender: "",
-      membertype: "",
     });
     setSearchform({
-      membername: "",
-      start_date: "",
-      expiry_date: "",
+      clubname: "",
     });
 
-    fetchAllMemberdetails();
   };
 
   const fetchAllMemberdetails = async () => {
-    setNewusers(!shownewusers);
     try {
-      const response = await api.get("/adminmemberdetails");
-      setDetails(response.data);
+      const response = await api.get("/allappliedorg");
+      if (response.data.success !== false) {
+        setDetails(response.data);
+      } else {
+        toast.error(response.data.error);
+      }
       // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }
   };
-  // console.log(details);
-  // useEffect(() => {
-  //   fetchAllMemberdetails();
-  // }, []);
+
+
+
   useEffect(() => {
-    // Use a timeout to wait for the user to stop typing
+
     const timeoutId = setTimeout(() => {
       fetchMembersFilters();
     }, 100);
     return () => clearTimeout(timeoutId);
   }, [filters]);
 
+
+
+  const handleorgaccept = async (org) => {
+    console.log("Accept org method");
+    try {
+
+      console.log(org)
+      const data = { "data": org }
+      const response = await api.post("/acceptingorg", data)
+      if (response.data.success !== false) {
+        fetchAllMemberdetails()
+      }
+      else {
+        toast.error(response.data.error)
+        fetchAllMemberdetails();
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+  };
+
+  const handleorgreject = async (org) => {
+    console.log("Accept org method");
+    try {
+
+      console.log(org)
+      const data = { "data": org }
+      const response = await api.post("/rejectingorg", data)
+      if (response.data.success !== false) {
+        fetchAllMemberdetails()
+      }
+      else {
+        toast.error(response.data.error)
+        fetchAllMemberdetails();
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+  };
   const handleSearchInputChange = (event) => {
     setSearchform({
       ...searchForm,
@@ -105,20 +156,15 @@ function AdminUser() {
     event.preventDefault();
 
     const data = {
-      membername: searchForm["membername"],
-      start_date: searchForm["start_date"],
-      expiry_date: searchForm["expiry_date"],
+      clubname: searchForm["clubname"],
     };
     // console.log("handle search submit");
     // console.log(data);
-
     try {
-      const response = await api.post("/usersearchform", data);
+      const response = await api.post("/searchorgbyname", data);
       if (response.data.success !== false) {
         setDetails(response.data);
-        // console.log(response.data);
       } else {
-        fetchAllMemberdetails();
         toast.error(response.data.error);
       }
     } catch (error) {
@@ -136,52 +182,33 @@ function AdminUser() {
 
   const fetchMembersFilters = async () => {
     try {
-      // console.log("filtering details");
-      // console.log(filters);
-      const tablefilters = { data: filters };
-      const response = await api.post("/adminusertablefilters", tablefilters);
-      // console.log(response.data);
-      if (response.data.success != false) {
-        // console.log("Response=" + response.data.error);
-        setDetails(response.data);
-      }
-      else if (response.data.data_dict === "empty") {
+
+      const data = { data: filters };
+      const response = await api.post("/appliedorgtablefilters", data);
+      console.log(response.data)
+      if (response.data.data_dict === "empty") {
         fetchAllMemberdetails();
 
+      } else if (response.data.success != false) {
+        console.log("Response=" + response.data.error);
+        setDetails(response.data);
       } else {
         toast.error(response.data.error);
         fetchAllMemberdetails();
       }
-      // if (response.data.data_dict === "empty") {
-      //   fetchAllMemberdetails();
-      // } else if (response.data.success != false) {
-      //   console.log("Response=" + response.data.error);
-      //   setDetails(response.data);
-      // } else {
-      //   // fetchAllMemberdetails();
-      //   toast.error(response.data.error);
-      // }
     } catch (error) {
       toast.error(error);
+
     }
   };
 
   // console.log(filters);
-
-  const handleshownewusers = async () => {
-    setNewusers(!shownewusers);
-    try {
-      const result = await api.get("/fetchingnewusers");
-      if (result.data.success !== false) {
-        setDetails(result.data);
-      } else {
-        fetchAllMemberdetails();
-        toast.error(result.data.error);
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
+  const navigate = useNavigate();
+  const handleorgreadmore = (org) => {
+    navigate("/admin/appliedorgdetails", {
+      state: JSON.stringify(org),
+    });
+  }
 
   return (
     <>
@@ -189,62 +216,25 @@ function AdminUser() {
         <AdminNavbar />
       </div>
       <div
+        className="mt-2"
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
         }}
       >
-        <div>
-          {shownewusers ? (
-            <button className="addpostbtn mt-3" onClick={handleshownewusers}>
-              New Users
-            </button>
-          ) : (
-            <button className="addpostbtn mt-3" onClick={fetchAllMemberdetails}>
-              All Users
-            </button>
-          )}
-
-          <button className="addpostbtn mt-3" onClick={handleformreset}>
-            Reset
-          </button>
-        </div>
-        <div className="mt-3"></div>
-        <div className="mt-3">
+        <div className="mt-0">
           <form className="form-inline my-lg-0 " onSubmit={handlesearchSubmit}>
             <div className="row">
-              <div className="col-3">
-                <span>Start Date:</span>
-                <input
-                  type="date"
-                  className="trtext"
-                  name="start_date"
-                  value={formatDateForInput(searchForm.start_date)}
-                  onChange={handleSearchInputChange}
-                  style={{ width: "10rem" }}
-                />
-              </div>
-              <div className="col-3">
-                <span>Expiry Date:</span>
-                <input
-                  type="date"
-                  className="trtext"
-                  style={{ width: "10rem" }}
-                  name="expiry_date"
-                  value={formatDateForInput(searchForm.expiry_date)}
-                  onChange={handleSearchInputChange}
-                />
-              </div>
-              <div className="col-4 p-2">
+              <div className="col-8 p-2">
                 <input
                   className="form-control"
-                  name="membername"
+                  name="clubname"
                   type="text"
                   placeholder="Search"
                   aria-label="Search"
                   onChange={handleSearchInputChange}
-                  value={searchForm.membername}
+                  value={searchForm.clubname}
                 />
               </div>
               <div className="col-2 p-2">
@@ -264,10 +254,21 @@ function AdminUser() {
                   </svg>
                 </button>
               </div>
+              <div className="col-2">
+                <button className="addorgbtn" onClick={handleformreset}>
+                  <GrPowerReset
+                    style={{
+                      height: "1.2rem",
+                      width: "1.2rem",
+                    }}
+                  />
+                </button>
+              </div>
             </div>
           </form>
         </div>
       </div>
+
       <hr />
       <div className="row">
         <div className="col-12">
@@ -281,13 +282,7 @@ function AdminUser() {
                     Sno
                   </th>
                   <th scope="col" className="tablehead align-middle">
-                    Id
-                  </th>
-                  <th scope="col" className="tablehead align-middle">
-                    Username
-                  </th>
-                  <th scope="col" className="tablehead align-middle">
-                    <span>Name </span>
+                    <span>Org Name </span>
                     <span>
                       <span>
                         <IoIosArrowDropupCircle
@@ -300,6 +295,12 @@ function AdminUser() {
                         />
                       </span>
                     </span>
+                  </th>
+                  <th scope="col" className="tablehead align-middle">
+                    Username
+                  </th>
+                  <th scope="col" className="tablehead align-middle">
+                    Owner Name
                   </th>
                   <th scope="col" className="tablehead align-middle">
                     Email
@@ -320,41 +321,13 @@ function AdminUser() {
                     </p>
                   </th>
                   <th scope="col" className="tablehead align-middle">
-                    Gender
+                    Read More..
                   </th>
                   <th scope="col" className="tablehead align-middle">
-                    Type
+                    Accept
                   </th>
                   <th scope="col" className="tablehead align-middle">
-                    <span>Start date </span>
-                    <p>
-                      <span>
-                        <IoIosArrowDropupCircle
-                          onClick={() => handlesorting("start_date")}
-                        />
-                      </span>
-                      <span>
-                        <IoIosArrowDropdownCircle
-                          onClick={() => handlesorting("start_date")}
-                        />
-                      </span>
-                    </p>
-                  </th>
-
-                  <th scope="col" className="tablehead align-middle">
-                    <span>Expiry date </span>
-                    <p>
-                      <span>
-                        <IoIosArrowDropupCircle
-                          onClick={() => handlesorting("expiry_date")}
-                        />
-                      </span>
-                      <span>
-                        <IoIosArrowDropdownCircle
-                          onClick={() => handlesorting("expiry_date")}
-                        />
-                      </span>
-                    </p>
+                    Reject
                   </th>
                 </tr>
               </thead>
@@ -365,8 +338,8 @@ function AdminUser() {
                     <div type="text" className="inputdiv">
                       <input
                         className="trtext"
-                        name="memberid"
-                        value={filters.memberid}
+                        name="clubname"
+                        value={filters.clubname}
                         onChange={handleFilterInputChange}
                       />
                     </div>
@@ -385,8 +358,8 @@ function AdminUser() {
                     <div type="text" className="inputdiv">
                       <input
                         className="trtext"
-                        name="name"
-                        value={filters.name}
+                        name="ownname"
+                        value={filters.ownname}
                         onChange={handleFilterInputChange}
                       />
                     </div>
@@ -413,28 +386,7 @@ function AdminUser() {
                   </td>
                   <td>
                     <div type="text" className="inputdiv">
-                      <select
-                        onChange={handleFilterInputChange}
-                        className="trtext form-select"
-                        style={{ width: "7rem" }}
-                        id="gender"
-                        name="gender"
-                        value={filters.gender}
-                      >
-                        <option value="">Gender</option>
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
-                      </select>
-                    </div>
-                  </td>
-                  <td>
-                    <div type="text" className="inputdiv">
-                      <input
-                        className="trtext"
-                        name="membertype"
-                        value={filters.membertype}
-                        onChange={handleFilterInputChange}
-                      />
+                      --
                     </div>
                   </td>
                   <td>
@@ -448,27 +400,40 @@ function AdminUser() {
                     </div>
                   </td>
                 </tr>
-                {details.map((post, index) => (
-                  <tr>
-                    <td className="trtext">{index + 1}</td>
-                    <td className="trtext">
-                      {post.memberid ? post.memberid : "--"}
-                    </td>
-                    <td className="trtext">{post.username}</td>
-                    <td className="trtext">{post.name}</td>
-                    <td className="trtext">{post.email}</td>
-                    <td className="trtext">{post.pnumber}</td>
-                    <td className="trtext">{post.gender}</td>
-                    <td className="trtext">
-                      {post.membertype}
-                    </td>
-                    <td className="trtext">
-                      {post.start_date ? post.start_date : "--"}
-                    </td>
-                    <td className="trtext">
-                      {post.expiry_date ? post.expiry_date : "--"}
-                    </td>
 
+                {details.map((org, index) => (
+                  <tr>
+                    <td className="trtext">{index + 1} </td>
+                    <td className="trtext">{org.clubname} </td>
+                    <td className="trtext">{org.username} </td>
+                    <td className="trtext">{org.ownname} </td>
+                    <td className="trtext">{org.email} </td>
+                    <td className="trtext">{org.pnumber} </td>
+
+                    <td className="trtext">
+                      <button
+                        className="addmembtn"
+                        onClick={() => handleorgreadmore(org)}
+                      >
+                        Read More..
+                      </button>
+                    </td>
+                    <td className="trtext">
+                      <button
+                        className="addmembtn"
+                        onClick={() => handleorgaccept(org)}
+                      >
+                        Accept
+                      </button>
+                    </td>
+                    <td className="trtext">
+                      <button
+                        className="addmembtn"
+                        onClick={() => handleorgreject(org)}
+                      >
+                        Reject
+                      </button>
+                    </td>
                     {/* <td scope="col">{post.username}</td>
                     <td scope="col">{post.pwd}</td> */}
                   </tr>
@@ -484,4 +449,4 @@ function AdminUser() {
   );
 }
 
-export default AdminUser;
+export default AdminAuthority;

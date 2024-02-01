@@ -4,7 +4,7 @@ import "./Css/UserSubscribeCss.css"
 import Navbar from '../Navbar'
 import api from '../../api'
 import { GrPowerReset } from "react-icons/gr";
-
+import {toast} from "react-toastify"
 
 
 function UserSubscribe() {
@@ -61,7 +61,7 @@ function UserSubscribe() {
         };
         console.log("handle search submit");
         try {
-            const response = await api.post("/usersearchingorgbyname", data);
+            const response = await api.post("/searchingorgbyname", data);
             if (response.data.success !== false) {
 
                 console.log(response.data)
@@ -69,7 +69,7 @@ function UserSubscribe() {
 
             }
             else {
-                alert(response.data.error)
+                toast.error(response.data.error)
             }
             // console.log(response.data);
         } catch (error) {

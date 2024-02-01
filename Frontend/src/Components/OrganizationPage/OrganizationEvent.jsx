@@ -50,7 +50,7 @@ function OrganizationEvent() {
       console.log(response);
       fetchAllPostdetails();
     } catch {
-      alert("Error in Deleting");
+      toast.error("Error in Deleting");
     }
   };
   const handleFormSubmit = async (event) => {

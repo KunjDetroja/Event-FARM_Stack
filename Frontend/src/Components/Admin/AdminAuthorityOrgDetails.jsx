@@ -1,19 +1,19 @@
-// AdminOrgDetailed.js
+// AdminAuthorityOrgDetails
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import $ from "jquery";
 import AdminNavbar from "./AdminNavbar";
-import "../../css/OrganisationEvent/orgEvent.css";
-import api from "../api";
-import "../../css/Admin/AdminOrdDetail.css";
+// import "../../css/OrganisationEvent/orgEvent.css";
+import "./Css/AdminOrgDetailCss.css";
 import { GrPowerReset } from "react-icons/gr";
 import {
   IoIosArrowDropupCircle,
   IoIosArrowDropdownCircle,
 } from "react-icons/io";
 import { toast } from "react-toastify";
+import api from "../../api";
 
-function AdminOrgDetailed() {
+function AdminAuthorityOrgDetails() {
   const [showmemberdatabtn, setShowmemberdatabtn] = useState(true);
   const [bvalue, setBValue] = useState(true);
   // const [details, setDetails] = useState();
@@ -159,50 +159,20 @@ function AdminOrgDetailed() {
         setMemberlist(response.data);
       } else {
         // setMemberlist(orgData.members)
-        alert(response.data.error);
+        toast.error(response.data.error);
       }
     } catch (error) {
-      alert(error);
+      toast.error(error);
     }
   };
 
-  const handleLoggedinmembers = async () => {
-    try {
-      console.log(originalmemberslist);
-      const result = await api.post("/loggedinmembers", { data: originalmemberslist });
-      console.log(result.data); // Log the result for debugging
-      if (result.data.success !== false) {
-        setMemberlist(result.data);
-      } else {
-        setMemberlist(orgData.members);
-        alert(result.data.error);
-      }
-    } catch (error) {
-      console.error("Error in handleLoggedinmembers:", error);
-    }
-  };
-
-  const handleInactivemembers = async () => {
-    try {
-      console.log(originalmemberslist);
-      const result = await api.post("/inactivemembers", { data: originalmemberslist });
-      console.log(result.data); // Log the result for debugging
-      if (result.data.success !== false) {
-        setMemberlist(result.data);
-      } else {
-        setMemberlist(orgData.members);
-        alert(result.data.error);
-      }
-    } catch (error) {
-      console.error("Error in handleLoggedinmembers:", error);
-    }
-  };
 
   return (
     <>
       <div>{<AdminNavbar />}</div>
 
       <div
+      className="mt-2"
         style={{
           display: "flex",
           flexDirection: "row",
@@ -210,9 +180,7 @@ function AdminOrgDetailed() {
         }}
       >
         <div className="mt-1">
-          {/* <Link to="/organisationevents/addpost">
-            <button className="addpostbtn">Member Data</button>
-          </Link> */}
+          
           {showmemberdatabtn ? (
             <button
               className="addpostbtn"
@@ -228,15 +196,7 @@ function AdminOrgDetailed() {
               >
                 Org Data
               </button>
-              <button className="addpostbtn" onClick={handleLoggedinmembers}>
-                Active Members
-              </button>
-              <button
-                className="addpostbtn"
-                onClick={handleInactivemembers}
-              >
-                Inactive Members
-              </button>
+              
             </>
           )}
         </div>
@@ -599,7 +559,7 @@ function AdminOrgDetailed() {
   );
 }
 
-export default AdminOrgDetailed;
+export default AdminAuthorityOrgDetails;
 {
   /**/
 }

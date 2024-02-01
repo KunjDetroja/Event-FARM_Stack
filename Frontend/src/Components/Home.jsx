@@ -72,7 +72,7 @@ function Home() {
             //   console.log("form data: " + JSON.stringify(lFormData))
             //   navigate("/home", { state: JSON.stringify(lFormData) });
             // } else {
-            //   alert("Wrong Username & Password!");
+            //   toast.error("Wrong Username & Password!");
             // }
             setLFormData({
                 clubname: '',

@@ -66,7 +66,7 @@ function UserEvent1() {
         });
     }, []);
 
-    const [isCol2Visible, setIsCol2Visible] = useState(true);
+    const [isCol2Visible, setIsCol2Visible] = useState(false);
 
     const toggleCol2Visibility = () => {
         setIsCol2Visible(!isCol2Visible);
@@ -193,7 +193,7 @@ function UserEvent1() {
         navigate("/event/partcipate")
     }
     const handleSubscribe = async (post) => {
-        navigate("/subscribe/form1", {state: JSON.stringify(post)})
+        navigate("/subscribe/form1", { state: JSON.stringify(post) })
     }
     // {
     //   "event_start_date": "",
@@ -424,11 +424,9 @@ function UserEvent1() {
                             </div>
                         ) : (
                             <div className="col-12" style={{ cursor: "pointer" }}>
-                                <FaArrowCircleRight
-                                    className=" mt-2"
-                                    onClick={toggleCol2Visibility}
-                                    style={{ fontSize: "2.2rem" }}
-                                />
+                                <button style={{ fontSize: "25px" }} className="addpostbtn pt-1 pb-1" onClick={toggleCol2Visibility}>
+                                    Filter
+                                </button>
                             </div>
                         )}
                         <div className={isCol2Visible ? "col-10" : "col-12"}>

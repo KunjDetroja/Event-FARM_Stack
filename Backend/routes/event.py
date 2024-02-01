@@ -25,8 +25,8 @@ async def home():
 # Routes For Admin ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Get all Organization
-@event.get("/getallorganization")
-async def find_all_organization():
+@event.get("/allorganisations")
+async def fetch_all_org():
     return serializeList(conn.event.organization.find())
 
 # Get one Organization by ID
@@ -37,13 +37,379 @@ async def find_one_organizaton(id):
 # Login Admin
 @event.post("/adminlogin")
 async def admin_login(data:dict):
-    u = conn.event.admin.find_one({"username":data["username"]})
+    u = conn.event.admin.find_one({"$and":[{"username":data["username"]},{"pwd":data["pwd"]}]})
     user = serializeDict(u)
-    if len(user)!= 0 and user["pwd"] == data["pwd"]:
+    if len(user)!= 0:
         return user
     else:
         return {"error":"Invalid Username and Password","success":False}
         
+
+#search org member details
+@event.post("/adminorgsearchfilter")
+async def org_search_filters(data:dict):
+
+    memberlist = data["memberlist"]
+    # print(memberlist)
+    newdata = data
+    del newdata["memberlist"]
+
+    # print(newdata)
+    if (newdata["expiry_date"] != ''):
+        # data["expiry_date"] = data["expiry_date"].strftime("%Y-%m-%d")
+        newdata["expiry_date"] = datetime.strptime(newdata["expiry_date"], "%Y-%m-%d")
+    if (newdata["start_date"] != ''):    
+        # data["start_date"] = data["start_date"].strftime("%Y-%m-%d")
+        newdata["start_date"] = datetime.strptime(newdata["start_date"], "%Y-%m-%d")
+
+    # print(data)
+    filtered_data = {}
+    for key, value in newdata.items():
+        if (value != '' or value != ""):
+          filtered_data[key] = value
+    print(filtered_data)
+
+    if not filtered_data:
+        return {"error": "Empty Filter inputs", "success": False}
+
+    print("inside else")
+    result = []
+    partial_name = data.get("membername", "")
+    regex_pattern = re.compile(f"{re.escape(partial_name)}.*", re.IGNORECASE)
+
+    for memberdict in memberlist:
+        if "name" in memberdict and re.match(regex_pattern, memberdict["name"]):
+            result.append(memberdict)
+
+    print(result)
+    if result:
+        return result
+    else:
+        return {"error": "No such Member found", "success": False}
+
+#admin side org member table filters
+@event.post("/adminorgmemberstablefilters")
+async def adminside_orgmembertablefilter(filters:dict):
+    data = filters["filterdict"]
+    filtered_data = {}
+    for key, value in data.items():
+        if (value != '' or value != ""):
+            filtered_data[key] = re.escape(value)
+    #print(filtered_data)
+    content = []
+    if (len(filtered_data) != 0):
+        
+        regex_patterns = {}
+        for key, value in data.items():
+            if value:
+                regex_patterns[key] = re.compile(f'^{re.escape(value)}', re.IGNORECASE)
+
+        # print (regex_patterns)
+        # organisation = conn.event.organization.find_one({"_id":ObjectId(orgid)})
+        membersList = filters["memberlist"]
+        # if membersList:
+            # org1 = serializeDict(organisation)
+            # membersList = org1["members"]
+        if (membersList != []):
+            for memberdict in membersList:
+                match = all(regex.match(str(memberdict.get(key, ''))) for key, regex in regex_patterns.items())
+                if match:
+                    content.append(memberdict)
+            if len(content) != 0:
+                # for i in content:
+                #     i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
+                #     i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
+                return content
+            else:
+                return {"error":"No Members","success":False}
+        else:
+            return {"error":"No Members","success":False}
+        # else:
+        #     return {"error":"Organisation not found","success":False}
+    else:
+        
+        return {"error":"Please enter data in filter input","success":False,"data_dict":"empty"}
+    
+    
+# admin side loggedin members
+@event.post("/loggedinmembers") 
+async def loggedin_members(data:dict):
+
+    logginemembers = []
+    for singledict in data["data"]:
+        if singledict["loggedin"] == True :
+            logginemembers.append(singledict)
+    if logginemembers:
+        # print(logginemembers)
+        return logginemembers
+    else:
+        return {"error":"No loggedin members","success":False}
+        # print("no members has loggedin")
+    
+   
+# admin side loggedin members
+@event.post("/inactivemembers") 
+async def inactive_members(data:dict):
+
+    inactivemembers = []
+    for singledict in data["data"]:
+        if singledict["loggedin"] == False :
+            inactivemembers.append(singledict)
+    if inactivemembers:
+        # print(logginemembers)
+        return inactivemembers
+    else:
+        return {"error":"No loggedin members","success":False}
+        # print("no members has loggedin")
+
+# fetching all users
+@event.get("/adminmemberdetails")
+async def adminside_allusers():
+    result = conn.event.user.find({})
+    result = serializeList(result)
+    # print(result)
+    if result:
+        for i in result:
+            if i["expiry_date"]:
+                i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
+            if i["start_date"]:
+                i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
+        return result
+    else:
+        return {"error":"No Users","success":False}
+    
+# fetching all new users
+@event.get("/fetchingnewusers")
+async def adminside_allnewusers():
+    newuserslist = []
+    result = conn.event.user.find({})
+    result = serializeList(result)
+    # print(result)
+    if result:
+        for i in result:
+            if (i["memberid"] == None):
+                newuserslist.append(i)
+        # print(newuserslist)
+        return newuserslist
+    else:
+        return {"error":"No New Users","success":False}
+
+# searching user by name , start_date/expiry_date
+@event.post("/usersearchform")
+async def adminside_searchuser(data:dict):
+    memberlist = serializeList(conn.event.user.find({}))
+    # print(memberlist)
+
+    # print(newdata)
+    if (data["expiry_date"] != ''):
+        # data["expiry_date"] = data["expiry_date"].strftime("%Y-%m-%d")
+        data["expiry_date"] = datetime.strptime(data["expiry_date"], "%Y-%m-%d")
+    if (data["start_date"] != ''):    
+        # data["start_date"] = data["start_date"].strftime("%Y-%m-%d")
+        data["start_date"] = datetime.strptime(data["start_date"], "%Y-%m-%d")
+
+    # print(data)
+    filtered_data = {}
+    for key, value in data.items():
+        if (value != '' or value != ""):
+          filtered_data[key] = value
+    print(filtered_data)
+
+    if not filtered_data:
+        return {"error": "Empty Filter inputs", "success": False}
+
+    print("inside else")
+    result = []
+    partial_name = data.get("membername", "")
+    regex_pattern = re.compile(f"{re.escape(partial_name)}.*", re.IGNORECASE)
+
+    for memberdict in memberlist:
+        if "name" in memberdict and re.match(regex_pattern, memberdict["name"]):
+            result.append(memberdict)
+
+    print(result)
+    if result:
+        return result
+    else:
+        return {"error": "No such Member found", "success": False}
+    
+# admin side user section table filters
+@event.post("/adminusertablefilters")
+async def allusers_tablefilters(data:dict):
+    allfiltersdata = data["data"]
+
+    filtered_data = {}
+    for key, value in allfiltersdata.items():
+        if (value != '' or value != ""):
+            filtered_data[key] = re.escape(value)
+    print(filtered_data)
+            
+    content = []
+    if (len(filtered_data) != 0):
+        
+        regex_patterns = {}
+        for key, value in filtered_data.items():
+            if value:
+                regex_patterns[key] = re.compile(f'^{re.escape(value)}.*', re.IGNORECASE)
+        print(regex_patterns)
+        
+        membersList = serializeList(conn.event.user.find({}))
+
+        print(membersList)
+        if membersList:
+            
+            for memberdict in membersList:
+                match = all(regex.match(str(memberdict.get(key, ''))) for key, regex in regex_patterns.items())
+                if match:
+                   content.append(memberdict)
+            print(content)
+            if content:
+                for i in content:
+                    if i["expiry_date"]:
+                        i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
+                    if i["start_date"]:
+                        i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
+                return content
+            else:
+                return {"error":"No Members","success":False}
+   
+        else:
+            return {"error":"No members","success":False}
+    else:
+        
+        return {"error":"Please enter data in filter input","success":False,"data_dict":"empty"}
+    
+   
+#fetching all appiled organisations
+@event.get("/allappliedorg")
+async def adminside_allappliedorg():
+    appliedlist = serializeList(conn.event.admin.find())
+    # print(appliedlist)
+    content = []
+    for singledict in appliedlist:
+        content = singledict["applied_org"]
+
+    # print(content)
+    if (len(content) != 0):
+        return serializeList(content)
+    else:
+        return {"error":"No Applied Organisation","success":False}
+
+# searching by organisation name
+@event.post("/searchorgbyname")
+async def adminside_searchorgbyname(data:dict):
+    # clubname = data["clubname"]
+    # print(clubname)
+    search_org = data["clubname"]
+    regex_pattern = f".*{re.escape(search_org)}.*"
+    pipeline = [
+        {"$unwind": "$applied_org"},
+        {"$match": {"applied_org.clubname": Regex(regex_pattern, "i")}},
+    ]
+    adminlist = conn.event.admin.aggregate(pipeline)
+    
+    content = []
+
+    if adminlist:
+        # print(adminlist)
+        for admin in adminlist:
+            org_dict = admin.get("applied_org", {})
+            content.append(org_dict)
+        # print(content)
+        if content:
+            return content
+        else:
+            return {"error":"Organisation Not Found","success":False}
+    else:
+        return {"error":"No Admin Data","success":False}
+
+# admin side applied org table filters
+@event.post("/appliedorgtablefilters") 
+async def adminside_applied_orgtablefilters(data:dict):
+    print(data)
+    allfiltersdata = data["data"]
+
+    filtered_data = {}
+    for key, value in allfiltersdata.items():
+        if (value != '' or value != ""):
+            filtered_data[key] = re.escape(value)
+    # print(filtered_data)
+    content = []
+
+    if (len(filtered_data) != 0):
+        
+        regex_patterns = {}
+        for key, value in allfiltersdata.items():
+            if value:
+                regex_patterns[key] = re.compile(f'^{re.escape(value)}.*', re.IGNORECASE)
+        print(regex_patterns)
+        
+        membersList = serializeList(conn.event.user.find({}))
+
+        
+        appliedlist = serializeList(conn.event.admin.find({}))
+        for singleapplieddict in appliedlist:
+            membersList = singleapplieddict["applied_org"]
+
+        if membersList:
+            
+            for memberdict in membersList:
+                match = all(regex.match(str(memberdict.get(key, ''))) for key, regex in regex_patterns.items())
+                if match:
+                   content.append(memberdict)
+            print(content)
+            if content:
+                return content
+            else:
+                return {"error":"Organisation not found","success":False}
+   
+        else:
+            return {"error":"No Applied Organisation","success":False}
+    else:
+        
+        return {"error":"Please enter data in filter input","success":False,"data_dict":"empty"}
+
+# accepting org
+@event.post("/acceptingorg")
+async def adminside_acceptorg(data:dict):
+    # print(data["data"])
+    acceptedOrg = data["data"]
+    result = conn.event.organization.insert_one(acceptedOrg)
+
+    adminlist = serializeList(conn.event.admin.find())
+
+    for singleadmin in adminlist:
+        appliedorglist = singleadmin["applied_org"]
+
+        updated_org = [i for i in appliedorglist if i["clubname"] != acceptedOrg["clubname"]]
+        # #print("Updated Member list",updated_members)
+        content = conn.event.admin.find_one_and_update({"_id":ObjectId(singleadmin["_id"])},{"$set": {"applied_org":updated_org}})
+    if content:
+        return True
+    else:
+        return {"error":"Nothing To Update", "success":False}
+    
+# rejecting org
+@event.post("/rejectingorg")
+async def adminside_rejectorg(data:dict):
+    # print(data["data"])
+    acceptedOrg = data["data"]
+    result = conn.event.rejectedorg.insert_one(acceptedOrg)
+
+    adminlist = serializeList(conn.event.admin.find())
+
+    for singleadmin in adminlist:
+        appliedorglist = singleadmin["applied_org"]
+
+        updated_org = [i for i in appliedorglist if i["clubname"] != acceptedOrg["clubname"]]
+        # #print("Updated Member list",updated_members)
+        content = conn.event.admin.find_one_and_update({"_id":ObjectId(singleadmin["_id"])},{"$set": {"applied_org":updated_org}})
+    if content:
+        return True
+    else:
+        return {"error":"Nothing To Update", "success":False}
+
+
 
 # Routes for Organization ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -587,25 +953,12 @@ async def getall_organization():
     else:
         return {"error": "Organization Not Found", "success": False}
 
-# USer Search Organization by Name
-@event.post("/usersearchingorgbyname")
-async def search_org_byname(data:dict):
-    search_query = data["clubname"]
-    regex_pattern = re.compile(f"{re.escape(search_query)}.*", re.IGNORECASE)
-    result = conn.event.organization.find({"clubname": {"$regex": regex_pattern}})
-
-    result = serializeList(result)
-    if result:
-        # print(result)
-        return result
-    else:
-        return {"error":"No organisation found","success":False}
     
 # User Subscribe 
 @event.put('/usersubscribe')
-async def user_subscribe(user: User):
+async def user_subscribe(user: dict):
     
-    appliedmem = dict(user)
+    appliedmem = user
     appliedmem["start_date"] = appliedmem["start_date"].strftime("%Y-%m-%d")
     appliedmem["expiry_date"] = appliedmem["expiry_date"].strftime("%Y-%m-%d")
     appliedmem["start_date"] = datetime.strptime(appliedmem["start_date"], "%Y-%m-%d")
@@ -703,6 +1056,20 @@ async def  all_membershiptype():
                         allmemtype.append(j["type"])
     return allmemtype
     
+#searching any org by org-name
+@event.post("/searchingorgbyname")
+async def search_org_byname(data:dict):
+    search_query = data["clubname"]
+    regex_pattern = re.compile(f"^{re.escape(search_query)}.*", re.IGNORECASE)
+    result = conn.event.organization.find({"clubname": {"$regex": regex_pattern}})
+
+    result = serializeList(result)
+    if result:
+        # print(result)
+        return result
+    else:
+        return {"error":"No organisation found","success":False}
+
 # Send Email 
 # @event.post("/send-email")
 # async def send_email(to: str, subject: str, message: str):

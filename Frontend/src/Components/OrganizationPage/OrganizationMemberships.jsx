@@ -60,7 +60,7 @@ function OrganizationMemberships() {
         setShowAddMembership(false);
       }
       else {
-        alert(response.data.error)
+        toast.error(response.data.error)
       }
       setNewMembershipForm({
         type: "",
