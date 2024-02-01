@@ -959,10 +959,7 @@ async def getall_organization():
 async def user_subscribe(user: dict):
     
     appliedmem = user
-    appliedmem["start_date"] = appliedmem["start_date"].strftime("%Y-%m-%d")
-    appliedmem["expiry_date"] = appliedmem["expiry_date"].strftime("%Y-%m-%d")
-    appliedmem["start_date"] = datetime.strptime(appliedmem["start_date"], "%Y-%m-%d")
-    appliedmem["expiry_date"] = datetime.strptime(appliedmem["expiry_date"], "%Y-%m-%d")
+    appliedmem["pnumber"] = int(appliedmem["pnumber"])
     # print(appliedorg)
     flag =0
     orgdict = serializeDict(conn.event.organization.find_one({"clubname":appliedmem["clubname"]}))
