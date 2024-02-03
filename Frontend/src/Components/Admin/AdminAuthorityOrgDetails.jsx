@@ -55,11 +55,11 @@ function AdminAuthorityOrgDetails() {
 
   const handlesorting = async (col) => {
     try {
-      const data = { clubname: orgData.clubname, col: col, value: bvalue };
-      const checking = await api.post("/membersortinguserside", data);
-      console.log(checking);
+      const data = { clubname: orgData.clubname, col: col, value: bvalue, "members":memberslist};
+      const checking = await api.post("/membersorting", data);
+      // console.log(checking);
       if (checking.data.success !== false) {
-        console.log(checking.data);
+        // console.log(checking.data);
         setBValue(!bvalue);
         setMemberlist(checking.data);
       } else {
@@ -112,12 +112,12 @@ function AdminAuthorityOrgDetails() {
       start_date: searchForm["start_date"],
       expiry_date: searchForm["expiry_date"],
     };
-    console.log("handle search submit");
-    console.log(data);
+    // console.log("handle search submit");
+    // console.log(data);
     try {
       const response = await api.post("/adminorgsearchfilter", data);
       if (response.data.success !== false) {
-        console.log(response.data);
+        // console.log(response.data);
         setMemberlist(response.data);
       } else {
         // toast.error(response.data.error)
@@ -137,7 +137,7 @@ function AdminAuthorityOrgDetails() {
 
   const fetchMembersFilters = async () => {
     try {
-      console.log(originalmemberslist);
+      // console.log(originalmemberslist);
       // console.log("filtering details");
       // console.log(filters);
       const filteredFormData = {};
@@ -146,8 +146,8 @@ function AdminAuthorityOrgDetails() {
           filteredFormData[key] = filters[key];
         }
       }
-      console.log("Filtered form:");
-      console.log(filteredFormData);
+      // console.log("Filtered form:");
+      // console.log(filteredFormData);
       const data = { filterdict: filteredFormData, memberlist: originalmemberslist };
       // const data = {"name":"hi"}
       const response = await api.post("/adminorgmemberstablefilters", data);
@@ -162,7 +162,7 @@ function AdminAuthorityOrgDetails() {
         toast.error(response.data.error);
       }
     } catch (error) {
-      toast.error(error);
+      console.error(error);
     }
   };
 

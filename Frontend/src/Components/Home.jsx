@@ -62,11 +62,11 @@ function Home() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(lFormData)
+        // console.log(lFormData)
         document.getElementById('event_image').value = ""
         try {
             const checking = await api.post("/eventpost/", lFormData);
-            console.log(checking);
+            // console.log(checking);
             // if (checking.data) {
             //   // Use the navigate function to go to the home page
             //   console.log("form data: " + JSON.stringify(lFormData))

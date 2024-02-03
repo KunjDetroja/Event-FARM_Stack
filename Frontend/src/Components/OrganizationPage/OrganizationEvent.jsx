@@ -44,10 +44,10 @@ function OrganizationEvent() {
   };
 
   const handledeletepost = async (post) => {
-    console.log("deleting button");
+    // console.log("deleting button");
     try {
       const response = await api.delete(`/deleteeventposts/${post._id}`);
-      console.log(response);
+      // console.log(response);
       fetchAllPostdetails();
     } catch {
       toast.error("Error in Deleting");
@@ -63,16 +63,16 @@ function OrganizationEvent() {
         filteredFormData[key] = lFormData[key];
       }
     }
-    console.log("Filtered form:")
-    console.log(filteredFormData);
+    // console.log("Filtered form:")
+    // console.log(filteredFormData);
 
     // Now you can use filteredFormData in your API call
     try {
-      console.log("Inside try for api calling:")
+      // console.log("Inside try for api calling:")
       const checking = await api.post(`/postfilters/${userData.clubname}`, filteredFormData);
-      console.log(checking);
+      // console.log(checking);
       if (checking.data.success !== false) {
-        console.log(checking.data)
+        // console.log(checking.data)
         setDetails(checking.data)
       }
       else {
@@ -105,7 +105,7 @@ function OrganizationEvent() {
       // console.log(typeof cname); //string
       const response = await api.post("/geteventposts/", { "clubname": cname });
       setDetails(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }

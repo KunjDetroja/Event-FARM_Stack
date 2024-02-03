@@ -68,11 +68,11 @@ function OrganizationUpdateMember() {
     // console.log(lFormData);
     try {
       const cname = userData.clubname;
-      console.log({
-        "clubname": cname,
-        "member": member.memberid,
-        "formData": lFormData,
-      });
+      // console.log({
+      //   "clubname": cname,
+      //   "member": member.memberid,
+      //   "formData": lFormData,
+      // });
       const response = await api.put("/organizationupdatememberdetails/", {
         "clubname": cname,
         "memberId": member.memberid,
@@ -82,7 +82,7 @@ function OrganizationUpdateMember() {
       if (response.data.success !== false) {
         toast.success("Member details Updated Successfully");
         navigate("/organizations/members");
-        console.log(response.data);
+        // console.log(response.data);
         setLFormData({
           name: "",
           email: "",

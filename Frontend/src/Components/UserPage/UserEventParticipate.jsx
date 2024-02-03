@@ -29,8 +29,8 @@ function UserEventParticipate() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(post_id)
-        console.log(lFormData)
+        // console.log(post_id)
+        // console.log(lFormData)
         try {
             const checking = await api.put(`/eventparticipate/${post_id}`, lFormData);
             // console.log(checking);

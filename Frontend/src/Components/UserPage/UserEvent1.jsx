@@ -23,7 +23,7 @@ function UserEvent1() {
         try {
             const response = await api.get("/allmembershiptype");
             setMemType(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
@@ -73,9 +73,9 @@ function UserEvent1() {
     };
 
     const fetchAllPostdetails = async () => {
-        console.log("fetching post function")
+        // console.log("fetching post function")
         try {
-            console.log(userData.username)
+            // console.log(userData.username)
             const response = await api.post(`/fetchingallpostforuser/${userData.username}`);
             setDetails(response.data);
             //   console.log(response.data);
@@ -131,16 +131,16 @@ function UserEvent1() {
             }
         }
 
-        console.log("Filtered form:");
-        console.log(filteredFormData);
+        // console.log("Filtered form:");
+        // console.log(filteredFormData);
 
         // Now you can use filteredFormData in your API call
         try {
-            console.log("Inside try for api calling:");
+            // console.log("Inside try for api calling:");
             const checking = await api.post("/postfilterforuser", filteredFormData);
-            console.log(checking);
+            // console.log(checking);
             if (checking.data.success !== false) {
-                console.log(checking.data);
+                // console.log(checking.data);
                 setDetails(checking.data);
             } else {
                 toast.error(checking.data.error);
@@ -178,11 +178,11 @@ function UserEvent1() {
     const handlesearchSubmit = async (event) => {
         event.preventDefault();
         const data = { "title": searchForm["event_title"], "uname": userData.username };
-        console.log("handle search submit");
+        // console.log("handle search submit");
         try {
             const response = await api.post("/postsearchbyuser", data);
             setDetails(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }

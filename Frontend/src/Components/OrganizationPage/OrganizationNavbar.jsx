@@ -14,7 +14,7 @@ function OrganizationNavbar() {
           localStorage.clear();
           setOrgData(null);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       };
     return (

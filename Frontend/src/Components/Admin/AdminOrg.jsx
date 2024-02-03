@@ -24,7 +24,7 @@ function AdminOrg() {
         try {
             const response = await api.get("/allorganisations");
             setDetails(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
@@ -32,7 +32,7 @@ function AdminOrg() {
 
     const navigate = useNavigate();
     const handleorgdetails = (org) => {
-        console.log(JSON.stringify(org))
+        // console.log(JSON.stringify(org))
         navigate("/admin/orgdetailspage", {
             state: JSON.stringify(org),
         });
@@ -60,12 +60,12 @@ function AdminOrg() {
         const data = {
             "clubname": searchForm["clubname"],
         };
-        console.log("handle search submit");
+        // console.log("handle search submit");
         try {
             const response = await api.post("/searchingorgbyname", data);
             if (response.data.success !== false) {
 
-                console.log(response.data)
+                // console.log(response.data)
                 setDetails(response.data);
 
             }

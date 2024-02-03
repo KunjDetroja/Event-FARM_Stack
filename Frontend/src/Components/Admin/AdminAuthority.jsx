@@ -108,10 +108,10 @@ function AdminAuthority() {
 
 
   const handleorgaccept = async (org) => {
-    console.log("Accept org method");
+    // console.log("Accept org method");
     try {
 
-      console.log(org)
+      // console.log(org)
       const data = { "data": org }
       const response = await api.post("/acceptingorg", data)
       if (response.data.success !== false) {
@@ -128,10 +128,10 @@ function AdminAuthority() {
   };
 
   const handleorgreject = async (org) => {
-    console.log("Accept org method");
+    // console.log("Accept org method");
     try {
 
-      console.log(org)
+      // console.log(org)
       const data = { "data": org }
       const response = await api.post("/rejectingorg", data)
       if (response.data.success !== false) {
@@ -185,19 +185,19 @@ function AdminAuthority() {
 
       const data = { data: filters };
       const response = await api.post("/appliedorgtablefilters", data);
-      console.log(response.data)
+      // console.log(response.data)
       if (response.data.data_dict === "empty") {
         fetchAllMemberdetails();
 
       } else if (response.data.success != false) {
-        console.log("Response=" + response.data.error);
-        setDetails(response.data);
+        // console.log("Response=" + response.data.error);
+        // setDetails(response.data);
       } else {
         toast.error(response.data.error);
         fetchAllMemberdetails();
       }
     } catch (error) {
-      toast.error(error);
+      console.error(error);
 
     }
   };

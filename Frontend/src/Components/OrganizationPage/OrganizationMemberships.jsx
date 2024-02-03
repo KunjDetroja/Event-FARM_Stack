@@ -24,7 +24,7 @@ function OrganizationMemberships() {
       const cname = userData.clubname;
       const response = await api.post("/getallmembership/", { "clubname": cname });
       setMemTypetable(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }

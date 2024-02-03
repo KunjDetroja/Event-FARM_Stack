@@ -18,7 +18,7 @@ function UserSubscribe() {
         try {
             const response = await api.get("/getallorganizatonforuser");
             setOrgDetails(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
@@ -32,7 +32,7 @@ function UserSubscribe() {
 
     const navigate = useNavigate();
     const handleorgdetails = (org) => {
-        console.log(JSON.stringify(org))
+        // console.log(JSON.stringify(org))
         navigate("/subscribe/orgdetails", {
             state: JSON.stringify(org),
         });
@@ -59,12 +59,12 @@ function UserSubscribe() {
         const data = {
             "clubname": searchForm["clubname"],
         };
-        console.log("handle search submit");
+        // console.log("handle search submit");
         try {
             const response = await api.post("/searchingorgbyname", data);
             if (response.data.success !== false) {
 
-                console.log(response.data)
+                // console.log(response.data)
                 setOrgDetails(response.data);
 
             }

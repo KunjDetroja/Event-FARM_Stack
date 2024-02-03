@@ -12,7 +12,7 @@ function UserParticipatedEvents() {
 
     const userData = JSON.parse(localStorage.getItem("users"))
     const fetchAllPostdetails = async () => {
-        console.log("fetching post function")
+        // console.log("fetching post function")
         try {
             // console.log(userData.username)
             const checking = await api.post(`/userparticipated/${userData.username}`);

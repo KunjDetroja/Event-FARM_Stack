@@ -41,7 +41,7 @@ function UserSubscribeForm1() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(lFormData)
+        // console.log(lFormData)
         try {
             const checking = await api.put("/usersubscribe", lFormData);
             if (checking.data.success !== false) {

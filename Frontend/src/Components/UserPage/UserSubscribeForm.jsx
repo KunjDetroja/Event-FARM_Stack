@@ -40,7 +40,7 @@ function UserSubscribeForm() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(lFormData)
+        // console.log(lFormData)
         try {
             const checking = await api.put("/usersubscribe", lFormData);
             if (checking.data.success !== false) {
@@ -68,12 +68,12 @@ function UserSubscribeForm() {
 
     const fetchAllMemTypedetails = async () => {
         try {
-            console.log(userData.username)
-            console.log(orgname)
+            // console.log(userData.username)
+            // console.log(orgname)
             const data = { "username": userData.username, "clubname": orgname }
             const response = await api.post("/filtermemtype", data);
             setMemType(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }

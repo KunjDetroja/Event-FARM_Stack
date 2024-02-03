@@ -34,7 +34,7 @@ function UserLogin({ setUBoolean }) {
   }, []);
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(lFormData)
+    // console.log(lFormData)
     try {
       const checking = await api.post("/userlogin/", lFormData);
       // console.log(checking);

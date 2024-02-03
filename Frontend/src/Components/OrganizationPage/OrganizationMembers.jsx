@@ -21,7 +21,7 @@ function OrganizationMember() {
   const userData = JSON.parse(localStorage.getItem("organization"))
     
   const orignalMembers = userData.members
-  console.log(orignalMembers)
+  // console.log(orignalMembers)
   const [filters, setFilters] = useState({
     memberid: "",
     username: "",
@@ -38,7 +38,7 @@ function OrganizationMember() {
       const cname = userData.clubname;
       const response = await api.post("/getmemtype/", { clubname: cname });
       setMemType(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }
@@ -57,9 +57,9 @@ function OrganizationMember() {
     try {
       const data = { "clubname": userData.clubname, "col": col["name"], "value": col["value"],"members":details }
       const checking = await api.post("/membersorting", data);
-      console.log(checking);
+      // console.log(checking);
       if (checking.data.success !== false) {
-        console.log(checking.data)
+        // console.log(checking.data)
         setBValue(!bvalue)
         setDetails(checking.data)
       }
@@ -74,7 +74,7 @@ function OrganizationMember() {
   }
 
   const handlememberupdate = (member) => {
-    console.log("Update detail method");
+    // console.log("Update detail method");
     localStorage.setItem('member', JSON.stringify(member));
     navigate("/organizations/members/updatemember")
   };
@@ -107,7 +107,7 @@ function OrganizationMember() {
       // console.log(typeof cname); //string
       const response = await api.post("/organizationmember/", { "clubname": cname });
       setDetails(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }
@@ -128,10 +128,10 @@ function OrganizationMember() {
 
   const deleteMember = async (post) => {
     const data = { "orgid": userData._id, "memberid": post.memberid }
-    console.log(data)
+    // console.log(data)
     try {
       const checking = await api.put("/deletemember", data);
-      console.log(checking);
+      // console.log(checking);
       if (checking.data.success !== false) {
         toast.success("Member Deleted Successfully")
         fetchAllMemberdetails();
@@ -155,14 +155,14 @@ function OrganizationMember() {
     event.preventDefault();
 
     const data = { cid: userData._id, membername: searchForm["membername"], start_date: searchForm["start_date"], expiry_date: searchForm["expiry_date"], };
-    console.log("handle search submit");
+    // console.log("handle search submit");
     try {
-      console.log(data);
+      // console.log(data);
       // const cname = userData._id; //Rajpath
-      // // console.log(typeof cname); //string
+      // console.log(typeof cname); //string
       const response = await api.post("/orgmemberfilter", data);
       setDetails(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching details:", error);
     }
@@ -170,8 +170,8 @@ function OrganizationMember() {
 
   const fetchMembersFilters = async () => {
     try {
-      console.log("filtering details");
-      console.log(filters);
+      // console.log("filtering details");
+      // console.log(filters);
       const tablefilters = { "data": filters,"members" : orignalMembers };
       const response = await api.post(
         "/organisationmembertablefilters",
@@ -188,7 +188,7 @@ function OrganizationMember() {
         toast.error(response.data.error)
       }
     } catch (error) {
-      toast.error(error);
+      console.error(error);
     }
   };
 

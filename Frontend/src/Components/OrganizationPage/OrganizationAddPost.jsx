@@ -17,7 +17,7 @@ function OrganizationAddPost() {
             const cname = userData.clubname;
             const response = await api.post("/getmemtype/", { "clubname": cname });
             setMemType(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
@@ -87,11 +87,11 @@ function OrganizationAddPost() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(lFormData)
+        // console.log(lFormData)
         document.getElementById('event_image').value = ""
         try {
             const checking = await api.post("/eventpost/", lFormData);
-            console.log(checking);
+            // console.log(checking);
             if (checking.data.success !== false) {
                 toast.success("Event Post Added Successfully")
                 navigate("/organizations/event");

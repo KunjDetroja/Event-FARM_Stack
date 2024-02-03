@@ -39,8 +39,8 @@ function AdminUser() {
 
   const handlesorting = async (col) => {
     try {
-      // const data = { clubname: orgData.clubname, col: col, value: bvalue };
-      // const checking = await api.post("/membersortinguserside", data);
+      // const data = { clubname: orgData.clubname, col: col, value: bvalue,"members":details };
+      // const checking = await api.post("/membersorting", data);
       // console.log(checking);
       // if (checking.data.success !== false) {
       //   console.log(checking.data);
@@ -141,7 +141,7 @@ function AdminUser() {
       const tablefilters = { data: filters };
       const response = await api.post("/adminusertablefilters", tablefilters);
       // console.log(response.data);
-      if (response.data.success != false) {
+      if (response.data.success !== false) {
         // console.log("Response=" + response.data.error);
         setDetails(response.data);
       }
@@ -162,7 +162,7 @@ function AdminUser() {
       //   toast.error(response.data.error);
       // }
     } catch (error) {
-      toast.error(error);
+      console.error(error);
     }
   };
 
@@ -179,7 +179,7 @@ function AdminUser() {
         toast.error(result.data.error);
       }
     } catch (error) {
-      toast.error(error);
+      console.error(error);
     }
   };
 

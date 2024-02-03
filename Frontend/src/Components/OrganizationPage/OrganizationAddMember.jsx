@@ -17,7 +17,7 @@ function OrganizationAddMember() {
             const cname = userData.clubname;
             const response = await api.post("/getmemtype/", { "clubname": cname });
             setMemType(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error("Error fetching details:", error);
         }
@@ -59,7 +59,7 @@ function OrganizationAddMember() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(lFormData)
+        // console.log(lFormData)
         try {
             const checking = await api.put(`/addorganizationmember/${userData._id}`, lFormData);
             if (checking.data.success !== false) {
