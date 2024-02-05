@@ -54,7 +54,7 @@ function AdminOrgDetail() {
 
     const handlesorting = async (col) => {
         try {
-            const data = { clubname: orgData.clubname, col: col, value: bvalue,"members":memberslist };
+            const data = { clubname: orgData.clubname,"col": col["name"], "value": col["value"],"members":memberslist };
             const checking = await api.post("/membersorting", data);
             // console.log(checking);
             if (checking.data.success !== false) {
@@ -119,7 +119,7 @@ function AdminOrgDetail() {
                 // console.log(response.data);
                 setMemberlist(response.data);
             } else {
-                // toast.error(response.data.error)
+                toast.error(response.data.error)
                 setMemberlist(orgData.members);
             }
         } catch (error) {
@@ -251,7 +251,7 @@ function AdminOrgDetail() {
                         >
                             <div className="row">
                                 <div className="col-3">
-                                    <span>Start Date:</span>
+                                    <span>From:</span>
                                     <input
                                         type="date"
                                         className="trtext"
@@ -262,7 +262,7 @@ function AdminOrgDetail() {
                                     />
                                 </div>
                                 <div className="col-3">
-                                    <span>Expiry Date:</span>
+                                    <span>To:</span>
                                     <input
                                         type="date"
                                         className="trtext"
@@ -409,12 +409,12 @@ function AdminOrgDetail() {
                                                 <span>
                                                     <span>
                                                         <IoIosArrowDropupCircle
-                                                            onClick={() => handlesorting("name")}
+                                                            onClick={() => handlesorting({"name":"name","value":true})}
                                                         />
                                                     </span>
                                                     <span>
                                                         <IoIosArrowDropdownCircle
-                                                            onClick={() => handlesorting("name")}
+                                                            onClick={() => handlesorting({"name":"name","value":false})}
                                                         />
                                                     </span>
                                                 </span>

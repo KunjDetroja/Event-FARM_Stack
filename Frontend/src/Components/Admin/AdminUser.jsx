@@ -15,8 +15,6 @@ function AdminUser() {
   const [details, setDetails] = useState();
   const [searchForm, setSearchform] = useState({
     membername: "",
-    start_date: "",
-    expiry_date: "",
   });
   // const [userData, setOrgData] = useState();
   const [filters, setFilters] = useState({
@@ -66,8 +64,6 @@ function AdminUser() {
     });
     setSearchform({
       membername: "",
-      start_date: "",
-      expiry_date: "",
     });
 
     fetchAllMemberdetails();
@@ -106,8 +102,6 @@ function AdminUser() {
 
     const data = {
       membername: searchForm["membername"],
-      start_date: searchForm["start_date"],
-      expiry_date: searchForm["expiry_date"],
     };
     // console.log("handle search submit");
     // console.log(data);
@@ -214,29 +208,7 @@ function AdminUser() {
         <div className="mt-3">
           <form className="form-inline my-lg-0 " onSubmit={handlesearchSubmit}>
             <div className="row">
-              <div className="col-3">
-                <span>Start Date:</span>
-                <input
-                  type="date"
-                  className="trtext"
-                  name="start_date"
-                  value={formatDateForInput(searchForm.start_date)}
-                  onChange={handleSearchInputChange}
-                  style={{ width: "10rem" }}
-                />
-              </div>
-              <div className="col-3">
-                <span>Expiry Date:</span>
-                <input
-                  type="date"
-                  className="trtext"
-                  style={{ width: "10rem" }}
-                  name="expiry_date"
-                  value={formatDateForInput(searchForm.expiry_date)}
-                  onChange={handleSearchInputChange}
-                />
-              </div>
-              <div className="col-4 p-2">
+              <div className="col-7 p-2">
                 <input
                   className="form-control"
                   name="membername"

@@ -9,6 +9,8 @@ function OrganizationSignup({ setOBoolean }) {
 
     const [lFormData, setLFormData] = useState({
         clubname: "",
+        logo: "",
+        background_image: "",
         ownname: "",
         email: "",
         address: "",
@@ -37,8 +39,12 @@ function OrganizationSignup({ setOBoolean }) {
                 toast.success("Signup Successfully")
                 document.getElementById('memtype').value = ""
                 document.getElementById('members').value = ""
+                document.getElementById('logo').value = ""
+                document.getElementById('background_image').value = ""
                 setLFormData({
                     clubname: "",
+                    logo: "",
+                    background_image: "",
                     ownname: "",
                     email: "",
                     address: "",
@@ -50,7 +56,7 @@ function OrganizationSignup({ setOBoolean }) {
                     username: "",
                     pwd: "",
                 });
-                navigate("/organization");
+                navigate("/");
             } else {
                 toast.error(checking.data.error);
             }
@@ -62,6 +68,36 @@ function OrganizationSignup({ setOBoolean }) {
         }
     };
 
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                const reader = new FileReader();
+
+                reader.onloadend = () => {
+                    // reader.result contains the base64-encoded string
+                    const base64String = reader.result;
+
+                    setLFormData({
+                        ...lFormData,
+                        [event.target.name]: base64String,
+                    });
+
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                setLFormData({
+                    ...lFormData,
+                    [event.target.name]: '',
+                });
+                document.getElementById(event.target.name).value = ""
+                toast.error('Unsupported file type. Please choose a JPG or PNG image.');
+
+            }
+        }
+    };
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -86,14 +122,14 @@ function OrganizationSignup({ setOBoolean }) {
     };
     return (
         <>
-            <div className="col-12 col-md-6 col-xl-7">
+            <div className="col-12 col-md-6 col-xl-6">
                 <div className="card border-0 rounded-4 ">
                     <div className="card-body p-3 p-md-4 p-xl-5">
                         <div className="row">
                             <div className="col-12">
                                 <div className="mb-4">
                                     <h3>Organization Sign up</h3>
-                                    <p>If you have an account? <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} onClick={() => {
+                                    <p>If you have an account? <button style={{ color: 'white', backgroundColor: '#0e2643', border: 'none', marginLeft: '1rem', padding: '0.3rem 0.5rem 0.3rem 0.5rem', borderRadius: '0.375rem' }} onClick={() => {
                                         setOBoolean(true)
                                     }}>Login</button></p>
                                 </div>
@@ -111,6 +147,8 @@ function OrganizationSignup({ setOBoolean }) {
                                             name="clubname"
                                             placeholder=''
                                             value={lFormData.clubname}
+                                            
+                                            required
                                         />
                                         <label htmlFor="clubname" className="form-label">
                                             Club Name
@@ -127,6 +165,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             name="ownname"
                                             placeholder=''
                                             value={lFormData.ownname}
+                                            required
                                         />
                                         <label htmlFor="ownername" className="form-label">
                                             Owner Name
@@ -145,6 +184,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="email"
                                             value={lFormData.email}
+                                            required
                                         />
                                         <label htmlFor="email" className="form-label">
                                             Email
@@ -161,13 +201,49 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="pnumber"
                                             value={lFormData.pnumber}
+                                            required
                                         />
                                         <label htmlFor="pnumber" className="form-label">
-                                            Phone Number:
+                                            Phone Number
                                         </label>
                                     </div>
                                 </div>
-
+                            </div>
+                            <div className="row  overflow-hidden" >
+                                <div className="col-6">
+                                    <div className="form-floating mb-3">
+                                        <input
+                                            onChange={handleImageChange}
+                                            type="file"
+                                            className="form-control"
+                                            id="logo"
+                                            placeholder=""
+                                            name="logo"
+                                        // value={lFormData.event_image}
+                                            required
+                                        />
+                                        <label htmlFor="event_image" className="form-label">
+                                            Logo
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="col-6">
+                                    <div className="form-floating mb-3">
+                                        <input
+                                            onChange={handleImageChange}
+                                            type="file"
+                                            className="form-control"
+                                            id="background_image"
+                                            placeholder=""
+                                            name="background_image"
+                                        // value={lFormData.event_image}
+                                            required
+                                        />
+                                        <label htmlFor="background_image" className="form-label">
+                                            Background Image
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div className="row  overflow-hidden" >
                                 <div className="col-12">
@@ -180,6 +256,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="address"
                                             value={lFormData.address}
+                                            required
                                         />
                                         <label htmlFor="address" className="form-label">
                                             Address
@@ -198,6 +275,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="city"
                                             value={lFormData.city}
+                                            required
                                         />
                                         <label htmlFor="city" className="form-label">
                                             City Name
@@ -234,6 +312,7 @@ function OrganizationSignup({ setOBoolean }) {
 
                                             multiple={false}
                                             name="memtype"
+                                            required
                                         />
                                         <label htmlFor="memtype" className="form-label">
                                             Membership .json File
@@ -250,6 +329,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             onChange={handleFileChange}
                                             multiple={false}
                                             name="members"
+                                            required
                                         />
                                         <label htmlFor="members" className="form-label">
                                             Members .json File
@@ -266,6 +346,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="username"
                                             value={lFormData.username}
+                                            required
                                         />
                                         <label htmlFor="username" className="form-label">
                                             Username
@@ -282,6 +363,7 @@ function OrganizationSignup({ setOBoolean }) {
                                             placeholder=""
                                             name="pwd"
                                             value={lFormData.pwd}
+                                            required
                                         />
                                         <label htmlFor="pwd" className="form-label">
                                             Password
@@ -290,7 +372,7 @@ function OrganizationSignup({ setOBoolean }) {
                                 </div>
                                 <div className="col-12">
                                     <div className="d-grid">
-                                        <button style={{color: 'white',backgroundColor: '#0e2643',border: 'none',marginLeft: '1rem',padding: '0.3rem 0.5rem 0.3rem 0.5rem',borderRadius: '0.375rem'}} type="submit">Log in now</button>
+                                        <button style={{ color: 'white', backgroundColor: '#0e2643', border: 'none', marginLeft: '1rem', padding: '0.3rem 0.5rem 0.3rem 0.5rem', borderRadius: '0.375rem' }} type="submit">Log in now</button>
                                     </div>
                                 </div>
                             </div>

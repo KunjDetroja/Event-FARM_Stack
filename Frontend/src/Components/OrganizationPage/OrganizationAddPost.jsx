@@ -51,20 +51,25 @@ function OrganizationAddPost() {
         const file = event.target.files[0];
 
         if (file) {
-            const reader = new FileReader();
+            if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                const reader = new FileReader();
 
-            reader.onloadend = () => {
-                // reader.result contains the base64-encoded string
-                const base64String = reader.result;
+                reader.onloadend = () => {
+                    // reader.result contains the base64-encoded string
+                    const base64String = reader.result;
 
-                setLFormData({
-                    ...lFormData,
-                    [event.target.name]: base64String,
-                });
+                    setLFormData({
+                        ...lFormData,
+                        [event.target.name]: base64String,
+                    });
 
-            };
+                };
 
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            } else {
+                // Display an error message or handle the case where the file type is not supported
+                toast.error('Unsupported file type. Please choose a JPG or PNG image.');
+            }
         }
     };
 

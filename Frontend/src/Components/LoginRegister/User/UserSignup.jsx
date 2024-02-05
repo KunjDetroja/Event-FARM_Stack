@@ -47,7 +47,7 @@ function UserSignup({ setUBoolean }) {
     };
     return (
         <>
-            <div className="col-12 col-md-6 col-xl-5">
+            <div className="col-12 col-md-6 col-xl-6">
                 <div className="card border-0 rounded-4">
                     <div className="card-body p-3 p-md-4 p-xl-5">
                         <div className="row">
@@ -62,7 +62,7 @@ function UserSignup({ setUBoolean }) {
                         </div>
                         <form onSubmit={handleFormSubmit}>
                             <div className="row gy-3 overflow-hidden">
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating">
                                         <input
                                             type="text"
@@ -78,7 +78,7 @@ function UserSignup({ setUBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating">
                                         <input
                                             type="email"
@@ -94,7 +94,7 @@ function UserSignup({ setUBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating">
                                         <input
                                             type="number"
@@ -110,7 +110,7 @@ function UserSignup({ setUBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6 pt-3">
                                     <div className="">
                                         <label htmlFor="gender" className="form-label me-3">
                                             Gender
@@ -134,7 +134,7 @@ function UserSignup({ setUBoolean }) {
                                         Female
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating">
                                         <input
                                             type="text"
@@ -150,7 +150,7 @@ function UserSignup({ setUBoolean }) {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-6">
                                     <div className="form-floating">
                                         <input
                                             type="password"

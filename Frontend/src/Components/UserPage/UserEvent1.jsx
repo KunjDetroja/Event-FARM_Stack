@@ -294,7 +294,7 @@ function UserEvent1() {
                                                     htmlFor="event_start_date"
                                                     className="form-label"
                                                 >
-                                                    Start Date
+                                                    From
                                                 </label>
                                             </div>
                                         </div>
@@ -310,7 +310,7 @@ function UserEvent1() {
                                                     value={formatDateForInput(lFormData.event_end_date)}
                                                 />
                                                 <label htmlFor="event_end_date" className="form-label">
-                                                    End Date
+                                                    To
                                                 </label>
                                             </div>
                                         </div>

@@ -16,13 +16,11 @@ function Organization() {
                     <hr className="border-primary-subtle mb-4" />
                     <h2 className="h1 mb-4">You can Share your Wonderful Upcoming Event To the User</h2>
                     <p className="lead mb-5">So User can be the Part of your Wonderful Event's Memory</p>
-                    <div className="text-endx">
-                    </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="col-12 col-md-6 col-xl-5">
+              <div className="col-12 col-md-6 col-xl-6">
                 <div className="d-flex justify-content-center">
                   <div className="col-12 col-xl-9">
                     <hr className="border-primary-subtle mb-4" />

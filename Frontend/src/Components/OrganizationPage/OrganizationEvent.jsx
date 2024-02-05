@@ -194,7 +194,7 @@ function OrganizationEvent() {
                       htmlFor="event_start_date"
                       className="form-label"
                     >
-                      Start Date
+                      From
                     </label>
                   </div>
                 </div>
@@ -210,7 +210,7 @@ function OrganizationEvent() {
                       value={formatDateForInput(lFormData.event_end_date)}
                     />
                     <label htmlFor="event_end_date" className="form-label">
-                      End Date
+                      To
                     </label>
                   </div>
                 </div>
