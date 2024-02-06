@@ -666,10 +666,8 @@ async def membertable_filtering(filters:dict):
 @event.post("/orgmemberfilter")
 async def filter_members(data:dict):
     if (data["expiry_date"] != ''):
-        # data["expiry_date"] = data["expiry_date"].strftime("%Y-%m-%d")
         data["expiry_date"] = datetime.strptime(data["expiry_date"], "%Y-%m-%d")
-    if (data["start_date"] != ''):    
-        # data["start_date"] = data["start_date"].strftime("%Y-%m-%d")
+    if (data["start_date"] != ''):
         data["start_date"] = datetime.strptime(data["start_date"], "%Y-%m-%d")
 
     print(data)
@@ -677,19 +675,13 @@ async def filter_members(data:dict):
     for key, value in data.items():
         if (value != '' or value != ""):
           filtered_data[key] = value
-    
-    # return filtered_data 
-    # print(filtered_data)
     organisation = conn.event.organization.find_one({"_id":ObjectId(data["cid"])})
     result = []
     if organisation:   
         
         org1 = serializeDict(organisation)
         partial_name = data["membername"]
-        regex_pattern = re.compile(f".*{re.escape(partial_name)}.*", re.IGNORECASE)
-        # #print(org1)
-        # member_name = data["membername"]
-        # #print(member_name)
+        regex_pattern = re.compile(f"^{re.escape(partial_name)}.*", re.IGNORECASE)
 
         for memberdict in org1["members"]:
             if "name" in memberdict and re.match(regex_pattern, memberdict["name"]):
@@ -704,10 +696,7 @@ async def filter_members(data:dict):
                         result.append(memberdict)
                 else:
                     result.append(memberdict)
-        # #print(d1)
-        #print(result)
         if (result != []):
-        #   print(result)
             for singledict in result:
                 singledict["expiry_date"] = singledict["expiry_date"].strftime("%Y-%m-%d")
                 singledict["start_date"] = singledict["start_date"].strftime("%Y-%m-%d")
