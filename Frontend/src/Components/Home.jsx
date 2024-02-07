@@ -102,7 +102,7 @@ function Home() {
             <Navbar />
             <h2 className='text-center mt-4'>Hey Guys,  </h2>
             <h2 className='text-center mt-4'>This page not finished yet </h2>
-            <div className="container mb-3 border rounded p-3">
+            {/* <div className="container mb-3 border rounded p-3">
                 <form onSubmit={handleFormSubmit}>
                     <div className="row gy-3 overflow-hidden">
                         <div className="col-6">
@@ -367,7 +367,7 @@ function Home() {
                         </div>
                     </div>
                 </form>
-            </div>
+            </div> */}
         </>
     )
 }

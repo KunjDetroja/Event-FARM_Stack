@@ -43,6 +43,9 @@ function OrganizationNavbar() {
                                 <NavLink to="/organizations/memberapplied" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Applied</NavLink>
                             </li>
                             <li className="nav-item">
+                                <NavLink to="/organizations/otherevent" className={`nav-link ${isHomeActive ? 'font-weight-bold' : ''}`}>Other Events</NavLink>
+                            </li>
+                            <li className="nav-item">
                                 {orgData?.email ? (
                                     <NavLink to="/" onClick={handleSignOut} className={`nav-link ${!isHomeActive ? 'font-weight-bold' : ''}`}>Logout {orgData.username}
                                     </NavLink>

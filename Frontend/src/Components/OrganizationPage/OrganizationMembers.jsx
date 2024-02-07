@@ -11,7 +11,6 @@ import {
 
 function OrganizationMember() {
   const navigate = useNavigate();
-  const [bvalue, setBValue] = useState(true)
   const [details, setDetails] = useState()
   const [searchForm, setSearchform] = useState({
     membername: "",
@@ -59,8 +58,6 @@ function OrganizationMember() {
       const checking = await api.post("/membersorting", data);
       // console.log(checking);
       if (checking.data.success !== false) {
-        // console.log(checking.data)
-        setBValue(!bvalue)
         setDetails(checking.data)
       }
       else {
@@ -293,14 +290,7 @@ function OrganizationMember() {
                   // style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                   >
                     <span className='mx-2'>Name{" "}</span>
-                    <span
-                    // style={{
-                    //   display: "inline-flex",
-                    //   flexDirection: "column",
-                    //   alignItems: "center",
-                    //   marginLeft: "10px"
-                    // }}
-                    >
+                    <span>
                       <span>
                         <IoIosArrowDropupCircle onClick={() => handlesorting({"name":"name","value":true})} />
                       </span>

@@ -8,11 +8,8 @@ function OrganizationMainPage() {
   return (
     <div>
       <OrganizationNavbar />
-      heyyyyyyyy
-      <div className="container-fluid">
-      {/* <div>{auth?.clubname}</div>
-      <div>{status}</div> */}
-      </div>
+      <h2 className='text-center mt-4'>Hey Guys,  </h2>
+      <h2 className='text-center mt-4'>This page not finished yet </h2>
     </div>
   )
 }

@@ -13,12 +13,12 @@ function UserLogin({ setUBoolean }) {
   });
 
   const handleInputChange = (event) => {
-    // console.log(event.target.name + " " + event.target.value);
-    setLFormData({
-      ...lFormData,
-      [event.target.name]: event.target.value,
-
-    });
+    
+      setLFormData({
+        ...lFormData,
+        [event.target.name]: event.target.value,
+  
+      });
   };
   const fetchAllDetails = async () => {
     try {
@@ -49,6 +49,7 @@ function UserLogin({ setUBoolean }) {
         navigate("/home");
       } else {
         toast.error(checking.data.error);
+        // alert(checking.data.error);
       }
       
     } catch (error) {
@@ -107,6 +108,7 @@ function UserLogin({ setUBoolean }) {
                       placeholder=""
                       name="username"
                       value={lFormData.username}
+
                     />
                     <label htmlFor="username" className="form-label">
                       Username

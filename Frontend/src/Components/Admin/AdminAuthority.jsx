@@ -13,7 +13,6 @@ import api from "../../api";
 
 
 function AdminAuthority() {
-  const [bvalue, setBValue] = useState(true);
   const [details, setDetails] = useState();
   const [searchForm, setSearchform] = useState({
     clubname: "",
@@ -28,39 +27,16 @@ function AdminAuthority() {
     email: "",
     pnumber: "",
   });
-  const [memType, setMemType] = useState();
-
-  const fetchAllMemtypedetails = async () => {
-    try {
-      // const cname = orgData.clubname;
-      // const response = await api.post("/getmemtype/", { clubname: cname });
-      // setMemType(response.data);
-      // console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching details:", error);
-    }
-  };
-
-  function formatDateForInput(dateString) {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return ""; // Invalid date, return an empty string
-    }
-    return date.toISOString().split("T")[0];
-  }
 
   const handlesorting = async (col) => {
     try {
-      // const data = { clubname: orgData.clubname, col: col, value: bvalue };
-      // const checking = await api.post("/membersortinguserside", data);
-      // console.log(checking);
-      // if (checking.data.success !== false) {
-      //   console.log(checking.data);
-      //   setBValue(!bvalue);
-      //   setDetails(checking.data);
-      // } else {
-      //   toast.error(checking.data.error);
-      // }
+      const data = { col: col["name"], value: col["value"],"members":details };
+      const checking = await api.post("/membersorting", data);
+      if (checking.data.success !== false) {
+        setDetails(checking.data);
+      } else {
+        toast.error(checking.data.error);
+      }
     } catch (error) {
       console.error("Error fetching details:", error);
     }
@@ -286,12 +262,12 @@ function AdminAuthority() {
                     <span>
                       <span>
                         <IoIosArrowDropupCircle
-                          onClick={() => handlesorting("name")}
+                          onClick={() => handlesorting({"name":"clubname","value":true})}
                         />
                       </span>
                       <span>
                         <IoIosArrowDropdownCircle
-                          onClick={() => handlesorting("name")}
+                          onClick={() => handlesorting({"name":"clubname","value":false})}
                         />
                       </span>
                     </span>
@@ -307,18 +283,18 @@ function AdminAuthority() {
                   </th>
                   <th scope="col" className="tablehead align-middle">
                     <span>Number </span>
-                    <p>
+                    <span>
                       <span>
                         <IoIosArrowDropupCircle
-                          onClick={() => handlesorting("pnumber")}
+                          onClick={() => handlesorting({"name":"pnumber","value":true})}
                         />
                       </span>
                       <span>
                         <IoIosArrowDropdownCircle
-                          onClick={() => handlesorting("pnumber")}
+                          onClick={() => handlesorting({"name":"pnumber","value":false})}
                         />
                       </span>
-                    </p>
+                    </span>
                   </th>
                   <th scope="col" className="tablehead align-middle">
                     Read More..
@@ -332,7 +308,7 @@ function AdminAuthority() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                {/* <tr>
                   <td></td>
                   <td>
                     <div type="text" className="inputdiv">
@@ -399,7 +375,7 @@ function AdminAuthority() {
                       --
                     </div>
                   </td>
-                </tr>
+                </tr> */}
 
                 {details.map((org, index) => (
                   <tr>

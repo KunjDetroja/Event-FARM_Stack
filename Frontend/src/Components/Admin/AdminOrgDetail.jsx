@@ -424,7 +424,7 @@ function AdminOrgDetail() {
                                             </th>
                                             <th scope="col" className="tablehead align-middle">
                                                 <span>Number </span>
-                                                <p>
+                                                <span>
                                                     <span>
                                                         <IoIosArrowDropupCircle
                                                             onClick={() => handlesorting("pnumber")}
@@ -435,7 +435,7 @@ function AdminOrgDetail() {
                                                             onClick={() => handlesorting("pnumber")}
                                                         />
                                                     </span>
-                                                </p>
+                                                </span>
                                             </th>
                                             <th scope="col" className="tablehead align-middle">
                                                 Gender
@@ -445,7 +445,7 @@ function AdminOrgDetail() {
                                             </th>
                                             <th scope="col" className="tablehead align-middle">
                                                 <span>Start date </span>
-                                                <p>
+                                                <span>
                                                     <span>
                                                         <IoIosArrowDropupCircle
                                                             onClick={() => handlesorting("start_date")}
@@ -456,12 +456,12 @@ function AdminOrgDetail() {
                                                             onClick={() => handlesorting("start_date")}
                                                         />
                                                     </span>
-                                                </p>
+                                                </span>
                                             </th>
 
                                             <th scope="col" className="tablehead align-middle">
                                                 <span>Expiry date </span>
-                                                <p>
+                                                <span>
                                                     <span>
                                                         <IoIosArrowDropupCircle
                                                             onClick={() => handlesorting("expiry_date")}
@@ -472,7 +472,7 @@ function AdminOrgDetail() {
                                                             onClick={() => handlesorting("expiry_date")}
                                                         />
                                                     </span>
-                                                </p>
+                                                </span>
                                             </th>
                                         </tr>
                                     </thead>

@@ -10,9 +10,9 @@ function UserSubscribeForm1() {
     const userData = JSON.parse(localStorage.getItem("users"))
     const location = useLocation();
     const postData = JSON.parse(location.state);
-    
+
     const [lFormData, setLFormData] = useState({
-        clubname:postData.clubname,
+        clubname: postData.clubname,
         name: "",
         email: "",
         pnumber: "",
@@ -22,6 +22,20 @@ function UserSubscribeForm1() {
         membertype: postData.type,
 
     });
+    useEffect(() => {
+        if (userData.membertype == "Public") {
+            setLFormData({
+                clubname: postData.clubname,
+                name: userData.name,
+                email: userData.email,
+                pnumber: userData.pnumber,
+                gender: userData.gender,
+                username: userData.username,
+                pwd: userData.pwd,
+                membertype: postData.type,
+            })
+        }
+    }, []);
 
     function formatDateForInput(dateString) {
         const date = new Date(dateString);
@@ -48,7 +62,7 @@ function UserSubscribeForm1() {
                 toast.success(checking.data.data)
                 navigate("/home");
                 setLFormData({
-                    clubname:"",
+                    clubname: "",
                     name: "",
                     email: "",
                     pnumber: "",
@@ -67,10 +81,10 @@ function UserSubscribeForm1() {
         }
     };
 
-  return (
-    <>
-        <Navbar/>
-        <h2 className='text-center mt-4'>You have to create New Account</h2>
+    return (
+        <>
+            <Navbar />
+            <h2 className='text-center mt-4'>You have to create New Account</h2>
             <div className="container mb-3 border rounded p-3 col-md-6">
                 <form onSubmit={handleFormSubmit}>
                     <div className="row gy-3 overflow-hidden">
@@ -101,6 +115,7 @@ function UserSubscribeForm1() {
                                     placeholder=""
                                     name="name"
                                     value={lFormData.name}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 <label htmlFor="name" className="form-label">
                                     Name
@@ -117,6 +132,7 @@ function UserSubscribeForm1() {
                                     placeholder=""
                                     name="pnumber"
                                     value={lFormData.pnumber}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 <label htmlFor="pnumber" className="form-label">
                                     Number
@@ -133,6 +149,7 @@ function UserSubscribeForm1() {
                                     placeholder=""
                                     name="email"
                                     value={lFormData.email}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 <label htmlFor="email" className="form-label">
                                     Email
@@ -150,6 +167,7 @@ function UserSubscribeForm1() {
                                     value="Male"
                                     checked={lFormData.gender === "Male"}
                                     onChange={handleInputChange}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 Male
                                 <input
@@ -159,6 +177,7 @@ function UserSubscribeForm1() {
                                     checked={lFormData.gender === "Female"}
                                     className='ms-2'
                                     onChange={handleInputChange}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 Female
                             </div>
@@ -173,6 +192,7 @@ function UserSubscribeForm1() {
                                     placeholder=""
                                     name="username"
                                     value={lFormData.username}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 <label htmlFor="username" className="form-label">
                                     Username
@@ -189,6 +209,7 @@ function UserSubscribeForm1() {
                                     placeholder=""
                                     name="pwd"
                                     value={lFormData.pwd}
+                                    {...(userData.membertype === "Public" ? { disabled: true } : {})}
                                 />
                                 <label htmlFor="pwd" className="form-label">
                                     Password
@@ -220,8 +241,8 @@ function UserSubscribeForm1() {
                     </div>
                 </form>
             </div>
-    </>
-  )
+        </>
+    )
 }
 
 export default UserSubscribeForm1

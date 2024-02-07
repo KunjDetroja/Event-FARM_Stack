@@ -11,7 +11,7 @@ import OrganizationAddPost from './Components/OrganizationPage/OrganizationAddPo
 import OrganizationMembers from './Components//OrganizationPage/OrganizationMembers';
 import OrganizationEventDetails from './Components/OrganizationPage/OrganizationEventDetails';
 import OrganizationAddMember from './Components/OrganizationPage/OrganizationAddMember';
-import OrganizationUpdateMember from './Components/OrganizationPage/OrganizationUpdateMember';
+// import OrganizationUpdateMember from './Components/OrganizationPage/OrganizationUpdateMember';
 import OrganizationMemberships from './Components/OrganizationPage/OrganizationMemberships';
 import OrganizationMemberApplied from './Components/OrganizationPage/OrganizationMemberApplied';
 import AdminLogin from './Components/Admin/AdminLogin';
@@ -29,6 +29,7 @@ import AdminOrg from './Components/Admin/AdminOrg';
 import AdminOrgDetail from './Components/Admin/AdminOrgDetail';
 import AdminAuthority from './Components/Admin/AdminAuthority';
 import AdminAuthorityOrgDetails from './Components/Admin/AdminAuthorityOrgDetails';
+import OrganizationOtherEvent from './Components/OrganizationPage/OrganizationOtherEvent';
 
 
 const App = () => {
@@ -57,11 +58,12 @@ const App = () => {
             <> */}
           <Route path="/organization" element={<OrganizationMainPage />} />
           <Route path="/organizations/event" element={<OrganizationEvent />} />
+          <Route path="/organizations/otherevent" element={<OrganizationOtherEvent />} />
           <Route path="/organizations/event/eventdetails" element={<OrganizationEventDetails />} />
           <Route path="/organizations/event/addpost" element={<OrganizationAddPost />} />
           <Route path="/organizations/members" element={<OrganizationMembers />} />
           <Route path="/organizations/members/addmember" element={<OrganizationAddMember />} />
-          <Route path="/organizations/members/updatemember" element={<OrganizationUpdateMember />} />
+          {/* <Route path="/organizations/members/updatemember" element={<OrganizationUpdateMember />} /> */}
           <Route path="/organizations/membership" element={<OrganizationMemberships />} />
           <Route path="/organizations/memberapplied" element={<OrganizationMemberApplied />} />
           {/* </>

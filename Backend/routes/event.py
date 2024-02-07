@@ -3,18 +3,19 @@ from fastapi.responses import JSONResponse,FileResponse
 from config.db import conn
 from model.event import *
 from schemas.event import serializeDict,serializeList
-from bson import ObjectId
+from bson import ObjectId,Regex
 import re
 # import qrcode
-# from email.message import EmailMessage
-# import smtplib
-# from dotenv import load_dotenv
-# import os
 
-# load_dotenv()
+from email.message import EmailMessage
+import smtplib
+from dotenv import load_dotenv
+import os
 
-# gmail_user = os.getenv("GMAIL_USER")
-# gmail_password = os.getenv("GMAIL_PASSWORD")
+load_dotenv()
+
+gmail_user = os.getenv("GMAIL_USER")
+gmail_password = os.getenv("GMAIL_PASSWORD")
 
 event = APIRouter()
 
@@ -22,7 +23,7 @@ event = APIRouter()
 async def home():
     return {"message": "Welcome to the home page"}
 
-# Routes For Admin ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
+# Routes For Admin -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Get all Organization
 @event.get("/allorganisations")
@@ -75,12 +76,12 @@ async def org_search_filters(data:dict):
     for key, value in newdata.items():
         if (value != '' or value != ""):
           filtered_data[key] = value
-    print(filtered_data)
+    # print(filtered_data)
 
     # if not filtered_data:
     #     return {"error": "Empty Filter inputs", "success": False}
 
-    print("inside else")
+    # print("inside else")
     result = []
     partial_name = data.get("membername", "")
     regex_pattern = re.compile(f"{re.escape(partial_name)}.*", re.IGNORECASE)
@@ -101,7 +102,7 @@ async def org_search_filters(data:dict):
             else:
                 result.append(memberdict)
 
-    print(result)
+    # print(result)
     if result:
         for singledict in result:
                 singledict["expiry_date"] = singledict["expiry_date"].strftime("%Y-%m-%d")
@@ -253,7 +254,7 @@ async def allusers_tablefilters(data:dict):
     for key, value in allfiltersdata.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    print(filtered_data)
+    # print(filtered_data)
             
     content = []
     if (len(filtered_data) != 0):
@@ -262,18 +263,18 @@ async def allusers_tablefilters(data:dict):
         for key, value in filtered_data.items():
             if value:
                 regex_patterns[key] = re.compile(f'^{re.escape(value)}.*', re.IGNORECASE)
-        print(regex_patterns)
+        # print(regex_patterns)
         
         membersList = serializeList(conn.event.user.find({}))
 
-        print(membersList)
+        # print(membersList)
         if membersList:
             
             for memberdict in membersList:
                 match = all(regex.match(str(memberdict.get(key, ''))) for key, regex in regex_patterns.items())
                 if match:
                    content.append(memberdict)
-            print(content)
+            # print(content)
             if content:
                 for i in content:
                     if i["expiry_date"]:
@@ -312,7 +313,7 @@ async def adminside_searchorgbyname(data:dict):
     # clubname = data["clubname"]
     # print(clubname)
     search_org = data["clubname"]
-    regex_pattern = f".*{re.escape(search_org)}.*"
+    regex_pattern = f"^{re.escape(search_org)}.*"
     pipeline = [
         {"$unwind": "$applied_org"},
         {"$match": {"applied_org.clubname": Regex(regex_pattern, "i")}},
@@ -337,7 +338,7 @@ async def adminside_searchorgbyname(data:dict):
 # admin side applied org table filters
 @event.post("/appliedorgtablefilters") 
 async def adminside_applied_orgtablefilters(data:dict):
-    print(data)
+    # print(data)
     allfiltersdata = data["data"]
 
     filtered_data = {}
@@ -353,7 +354,7 @@ async def adminside_applied_orgtablefilters(data:dict):
         for key, value in allfiltersdata.items():
             if value:
                 regex_patterns[key] = re.compile(f'^{re.escape(value)}.*', re.IGNORECASE)
-        print(regex_patterns)
+        # print(regex_patterns)
         
         membersList = serializeList(conn.event.user.find({}))
 
@@ -368,7 +369,7 @@ async def adminside_applied_orgtablefilters(data:dict):
                 match = all(regex.match(str(memberdict.get(key, ''))) for key, regex in regex_patterns.items())
                 if match:
                    content.append(memberdict)
-            print(content)
+            # print(content)
             if content:
                 return content
             else:
@@ -386,7 +387,6 @@ async def adminside_acceptorg(data:dict):
     # print(data["data"])
     acceptedOrg = data["data"]
     result = conn.event.organization.insert_one(acceptedOrg)
-
     adminlist = serializeList(conn.event.admin.find())
 
     for singleadmin in adminlist:
@@ -421,8 +421,7 @@ async def adminside_rejectorg(data:dict):
         return {"error":"Nothing To Update", "success":False}
 
 
-
-# Routes for Organization ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
+# Routes for Organization -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Get all Members of Organization by Clubname
 @event.post("/organizationmember/")
@@ -442,7 +441,14 @@ async def organization_member(data : dict):
 async def create_organization(organisation: Organization):
     appliedorg = dict(organisation)
     # print(appliedorg)
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, appliedorg["email"]) == None:
+        return {"error":"Invalid Email Format","success":False}
 
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(appliedorg["pnumber"])) == None: 
+        return {"error":"Phone Number in 10 Digits","success":False}
+    
     allorg = conn.event.organization.find()
     allorg = serializeList(allorg)
     orgusernameList = []
@@ -458,8 +464,8 @@ async def create_organization(organisation: Organization):
             for singleadmindict in adminlist:
                 appliedlist = singleadmindict["applied_org"]
                 for singleorg in appliedlist:
-                    if singleorg["clubname"] == appliedorg  ["clubname"]:
-                        return {"error":"You Have Already   Applied", "success":False}
+                    if singleorg["clubname"] == appliedorg["clubname"]:
+                        return {"error":"You Have Already Applied", "success":False}
 
                 singleadmindict["applied_org"].append(appliedorg)
                 conn.event.admin.update_one({"_id": ObjectId (singleadmindict["_id"])}, {"$set":      {"applied_org": singleadmindict["applied_org"]}})
@@ -488,35 +494,26 @@ async def get_memtype(data:dict):
         type.append(i["type"])
     return type
 
-# Sorting of Member list by Parameters
-@event.post("/membersorting")
-async def member_sorting(data:dict):
-    # org = conn.event.organization.find_one({"clubname" : data["clubname"]})
-    org = data["members"]
-    if org:
-        # org1 =  serializeDict(org)["members"]
-        if len(org) != 0:
-        # print(org1)
-            if data["value"]:
-                sorted_list = sorted(org, key=lambda x: x[data["col"]])
-                # for i in sorted_list:
-                #     i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
-                #     i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
-                return sorted_list
-            else:
-                sorted_list = sorted(org, key=lambda x: x[data["col"]], reverse=True)
-                # for i in sorted_list:
-                #     i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
-                #     i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
-                return sorted_list
-
-    else:
-        return {"error":"Organization not Found","success":False}
 
 # Add Member in Organization
 @event.put("/addorganizationmember/{id}")
 async def add_member(id:str,member:User):
     data_dict = dict(member)
+    
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, data_dict["email"]) == None:
+        return {"error":"Invalid Email Format","success":False}
+
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(data_dict["pnumber"])) == None:
+        return {"error":"Phone Number in 10 Digits","success":False}
+    
+    start = data_dict["start_date"].strftime("%Y-%m-%d")
+    expiry = data_dict["expiry_date"].strftime("%Y-%m-%d")
+    start = datetime.strptime(start, "%Y-%m-%d")
+    expiry = datetime.strptime(expiry, "%Y-%m-%d")
+    if start>expiry or start == expiry:
+        return {"error":"Start Date should be less than Expiry Date","success":False}
     org = conn.event.organization.find({"_id":ObjectId(id)})
     if org:
         data_dict1 = serializeList(org)[0]["members"]
@@ -623,11 +620,11 @@ async def add_membership(clubname : str,data : dict):
 async def membertable_filtering(filters:dict):
     data = filters["data"]
     filtered_data = {}
-    print(data)
+    # print(data)
     for key, value in data.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    print(filtered_data)
+    # print(filtered_data)
     content = []
     if (len(filtered_data) != 0):
         
@@ -670,7 +667,7 @@ async def filter_members(data:dict):
     if (data["start_date"] != ''):
         data["start_date"] = datetime.strptime(data["start_date"], "%Y-%m-%d")
 
-    print(data)
+    # print(data)
     filtered_data = {}
     for key, value in data.items():
         if (value != '' or value != ""):
@@ -707,14 +704,260 @@ async def filter_members(data:dict):
     else:
         return {"error":"Organisation Not Found","success":False}
 
+# fetch all the applied users
+@event.post("/allappliedusers")
+async def adminside_allappliedusers(data:dict):
+    clubId = data["clubid"]
+    orgData = conn.event.organization.find({"_id":ObjectId(clubId)})
+    orgData = serializeList(orgData)
+    neworgdata = orgData[0]
+    applied_users = neworgdata["memapplied"]
+    if (len(applied_users) != 0):
+        return applied_users
+    else:
+        return {"error":"No Applied Organisation","success":False}
+
+# accepting a user's subscription
+@event.post("/acceptingusersubscription")
+async def adminside_acceptorg(data:dict):
+    # print(data)
+
+    memberdata = data["memberdata"]
+    acceptedUser = data["data"]
+    givenmemberid = memberdata["memberid"]
+    startdate = memberdata["start_date"]
+    startdate = datetime.strptime(startdate, "%Y-%m-%d")
+    expirydate = memberdata["expiry_date"]
+    expirydate = datetime.strptime(expirydate, "%Y-%m-%d")
+    if (expirydate <= startdate):
+        return {"error":"Start Date should be less than Expiry Date","success":False}
+    clubid = data["clubid"]
+
+    org = conn.event.organization.find({"_id":ObjectId(clubid)})
+    org = serializeList(org)[0]
+
+    # print(org)
+
+    memberslists = org["members"]
+    orgappliedmemberslist = org["memapplied"]
+    # print(memberslists)
+
+    allmemberid = []
+    for singlemember in memberslists:
+        allmemberid.append(singlemember["memberid"])
+    # print(allmemberid)
+
+    if (len(allmemberid) !=0):
+        if givenmemberid in allmemberid:
+            return {"error":"MemberId Already Exists","success":False,"closeform":False}
+        else:
+
+            acceptedUser["memberid"] = givenmemberid
+            acceptedUser["start_date"] = startdate
+            acceptedUser["expiry_date"] = expirydate
+                   
+            # print(acceptedUser)
+      
+            usersloggedindata = acceptedUser
+
+            # conn.event.user.insert_one(usersloggedindata)
+            if (conn.event.user.find_one({"username":acceptedUser["username"]})):
+                content = conn.event.user.find_one_and_update({"username":acceptedUser["username"]},{"$set": usersloggedindata})
+            else:
+                conn.event.user.insert_one(usersloggedindata)        
+
+            acceptedUser["loggedin"] = True
+            acceptedUser["subscribe"] = True
+            # print(acceptedUser)
+            del acceptedUser["clubname"]
+            # print(acceptedUser)
+            if "_id" in acceptedUser:
+                del acceptedUser["_id"]
+            
+            memberslists.append(acceptedUser)
+
+            updated_user = [i for i in orgappliedmemberslist if i["username"] != acceptedUser["username"]]
+
+            content = conn.event.organization.find_one_and_update({"_id":ObjectId(org["_id"])},{"$set": {"memapplied":updated_user,"members" : memberslists}})
+
+            if content:
+                return True
+            else:
+                return {"error":"Nothing To Update", "success":False}
+    else:
+        acceptedUser["memberid"] = givenmemberid
+        acceptedUser["start_date"] = startdate
+        acceptedUser["expiry_date"] = expirydate
+        
+
+        usersloggedindata = acceptedUser
+        conn.event.user.insert_one(usersloggedindata)
+            
+        acceptedUser["loggedin"] = True
+        acceptedUser["subscribe"] = True
+        del acceptedUser["clubname"]
+        if "_id" in acceptedUser:
+            del acceptedUser["_id"]
+
+        memberslists.append(acceptedUser)
+
+        updated_user = [i for i in orgappliedmemberslist if i["username"] != acceptedUser["username"]]
+
+        content = conn.event.organization.find_one_and_update({"_id":ObjectId(org["_id"])},{"$set": {"memapplied":updated_user,"members" : memberslists}})
+        
+        if content:
+            return True
+        else:
+            return {"error":"Nothing To Update", "success":False}
+        
+# rejecting subscribing user 
+@event.post("/rejectingsubscribinguser")
+async def adminside_rejectorg(data:dict):
+    # print(data["data"])
+    rejectedUser = data["data"]
+
+    conn.event.rejectedusers.insert_one(rejectedUser)
+
+    orgdata = serializeDict(conn.event.organization.find_one({"_id":ObjectId(data["clubid"])}))
+
+    
+    orgappliedmemberslist = orgdata["memapplied"]
+
+    updated_user = [i for i in orgappliedmemberslist if i["username"] != rejectedUser["username"]]
+
+
+    content = conn.event.organization.find_one_and_update({"_id":ObjectId(orgdata["_id"])},{"$set": {"memapplied":updated_user}})
+
+    if content:
+        return True
+    else:
+        return {"error":"Nothing To Update", "success":False}
+    
+# other organisation's fetch all post details
+@event.post("/getotherorgeventposts")
+async def get_other_org_eventposts(data : dict):
+    response = conn.event.post.find({"clubname": {"$ne": data["clubname"]}})
+    # #print(serializeList(response))
+    if response:
+        lis = []
+        d1= {}
+        for singleDict in response:
+            d1 = singleDict
+            d1["event_start_date"] = d1["event_start_date"].strftime("%d-%m-%Y")
+            d1["event_end_date"] = d1["event_end_date"].strftime("%d-%m-%Y")
+            # conn.event.user.insert_one(d1)
+            lis.append(serializeDict(d1))
+        return serializeList(lis)
+        # return serializeList(response)
+    else:
+        return {"error":"no post found","success":False}
+
+# other organisation event post filter functionality to fetch post
+@event.post("/otherorgeventpostfilters")
+async def other_org_eventpost_filters(data: dict):
+    filtereddata = data["filteredFormData"]
+    clubname = data["clubname"]
+    # Build the query based on the filteredFormData
+    query = {}
+    and_conditions = []
+    for field, value in filtereddata.items():
+
+        if field in ["event_start_date", "event_end_date"] and value != "":
+            value = datetime.strptime(value, "%Y-%m-%d")
+            #print(value)
+            if field == "event_start_date":
+                and_conditions.append({"event_start_date": {"$gte": value}})
+                #print(query)
+            if field == "event_end_date":
+                and_conditions.append({"event_start_date": {"$lte": value}})
+                #print(query)
+
+        if field in ["minprice", "maxprice"] and value != "":
+            if field == "minprice":
+                and_conditions.append({"ticket_price": {"$gte": float(value)}})
+            if field == "maxprice":
+                and_conditions.append({"ticket_price": {"$lte": float(value)}})
+
+        if field == "venue_city" and value != "":
+            regex_pattern = re.compile(f"^{re.escape(value)}", re.IGNORECASE)
+            and_conditions.append({"venue_city": {"$regex": regex_pattern}})
+
+    and_conditions.append({"clubname": {"$ne": clubname}})
+    if and_conditions:
+        query["$and"] = and_conditions
+
+    result = conn.event.post.find(query)
+
+    # Iterate over the result and print each post
+    response_list = serializeList(result)
+    if response_list:
+        lis = []
+        d1= {}
+        for singleDict in response_list:
+            d1 = singleDict
+            d1["event_start_date"] = d1["event_start_date"].strftime("%d-%m-%Y")
+            d1["event_end_date"] = d1["event_end_date"].strftime("%d-%m-%Y")
+            lis.append(serializeDict(d1))
+        return serializeList(lis)
+    else:
+        return {"error": "Error, please fill the form again", "success": False}
+
+#fetching other organisation's event posts by title
+@event.post("/otherorgeventpostsbytitle")
+async def otherorg_eventpost_bytitle(data:dict):
+    clubname = data["clubname"]
+    organisation = conn.event.organization.find_one({"clubname": clubname})
+    if organisation:
+        
+        posts = conn.event.post.find({"clubname": {"$ne": clubname}})
+        result = []
+        if (posts != []):
+            partial_name = data["title"]
+            if (partial_name == ""):
+                return {"error":"No Title input","success":False}
+            else:
+                regex_pattern = re.compile(f"^{re.escape(partial_name)}.*", re.IGNORECASE)
+    
+                for postdict in serializeList(posts):
+                    # if postdict["event_title"] == data["title"]:
+                    if "event_title" in postdict and re.match(regex_pattern, postdict["event_title"]):
+                        result.append(postdict)
+                        break  
+                if result:
+                    return result
+                else:
+                    return {"error":"No post found","success":False}
+        else:
+            return {"error":"No post found","success":False}
+    return {"error":"No organisation found","success":False}
+
+
 
 # Routes for Post ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Insert Event Post
 @event.post("/eventpost/")
 async def event_post(data : EventPost):
+    
     try:
+
         data_dict = dict(data)
+        email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+        if re.match(email_pattern, data_dict["event_organizer_email"]) == None:
+            return {"error":"Invalid Email Format","success":False}
+        number_pattern = r'^\d{10}$'
+        if re.match(number_pattern, str(data_dict["event_organizer_pnumber"])) == None:
+            return {"error":"Phone Number in 10 Digits","success":False}
+        start = data_dict["event_start_date"].strftime("%Y-%m-%d")
+        end = data_dict["event_end_date"].strftime("%Y-%m-%d")
+        start = datetime.strptime(start, "%Y-%m-%d")
+        end = datetime.strptime(end, "%Y-%m-%d")
+        if start>end:
+            return {"error":"Start Date should be less than or equal to End Date","success":False}
+        tstart = datetime.strptime(data_dict["start_time"], "%H:%M").time()
+        tend = datetime.strptime(data_dict["end_time"], "%H:%M").time()
+        if (tstart>tend):
+            return {"error":"Start Time should be less than End Time","success":False}
         if data_dict["type"] == '':
             return {"error":"Select Membership Type","success":False}
         data_dict["event_start_date"] = data_dict["event_start_date"].strftime("%Y-%m-%d")
@@ -724,6 +967,7 @@ async def event_post(data : EventPost):
         conn.event.post.insert_one(data_dict)
         return {"data": "Event data successfully submitted"}
     except ValueError:
+        print("ValueError")
         return {"error":"ValueError","success":False}
     
 # Get Event Post by Clubname
@@ -803,13 +1047,19 @@ async def delete_user(id):
         return {"error":"no post found","success":False}
 
 
-# Routes For User ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
+# Routes For User -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
     
 # Signup for User
 @event.post("/usersignup/")
 async def create_user(user:User):
     d1 = dict(user)
     # print(d1)
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, d1["email"]) == None:
+        return {"error":"Invalid Email Format","success":False}
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(d1["pnumber"])) == None:
+        return {"error":"Phone Number in 10 Digits","success":False}
     allorg = conn.event.organization.find()
     allorg = serializeList(allorg)
 
@@ -890,7 +1140,7 @@ async def fetch_all_post_userside(uname:str):
 @event.post("/postfilterforuser")
 async def postfilter_user(data : dict):
     query = {}
-    print(data)
+    # print(data)
     and_conditions = []
 
     for field, value in data.items():
@@ -941,6 +1191,12 @@ async def postfilter_user(data : dict):
 @event.put("/eventparticipate/{id}")
 async def event_participate(id:str,data:dict):
     data["age"] = int(data["age"])
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, data["email"]) == None:
+        return {"error":"Invalid Email Format","success":False}
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(data["pnumber"])) == None:
+        return {"error":"Phone Number in 10 Digits","success":False}
     post = conn.event.post.find_one({"_id":ObjectId(id)})
     if post:
         p1 = serializeDict(post)["participate"]
@@ -995,8 +1251,15 @@ async def user_subscribe(user: dict):
     
     appliedmem = user
     appliedmem["pnumber"] = int(appliedmem["pnumber"])
-    # print(appliedorg)
-    flag =0
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, appliedmem["email"]) == None:
+        return {"error":"Invalid Email Format","success":False}
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(appliedmem["pnumber"])) == None:
+        return {"error":"Phone Number in 10 Digits","success":False}
+    # if datetime.strptime(appliedmem["event_start_date"], "%Y-%m-%d") < datetime.strptime(appliedmem["event_expiry_date"], "%Y-%m-%d"):
+    #     return {"error":"Start Date should be less than Expiry Date","success":False}
+    
     orgdict = serializeDict(conn.event.organization.find_one({"clubname":appliedmem["clubname"]}))
     # return orgdict
     if len(orgdict) !=0:
@@ -1063,7 +1326,7 @@ async def filter_memtype(data : dict):
     
 
 
-# General Routes ---------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# General Routes ------------------------------------------------------------------------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Get all the Clubnames
 @event.get("/clubnames/")
@@ -1102,30 +1365,56 @@ async def search_org_byname(data:dict):
     else:
         return {"error":"No organisation found","success":False}
 
-# Send Email 
-# @event.post("/send-email")
-# async def send_email(to: str, subject: str, message: str):
-#     try:
-#         # Create an EmailMessage
-#         email = EmailMessage()
-#         email.set_content(message)
-#         email["Subject"] = subject
-#         email["From"] = gmail_user
-#         email["To"] = to
 
-#         # Connect to Gmail SMTP server
-#         with smtplib.SMTP("smtp.gmail.com", 587) as server:
-#             server.starttls()
-#             # Log in to the Gmail account
-#             server.login(gmail_user, gmail_password)
-#             # Send the email
-#             server.send_message(email)
+# Sorting of Member list by Parameters
+@event.post("/membersorting")
+async def member_sorting(data:dict):
+    # org = conn.event.organization.find_one({"clubname" : data["clubname"]})
+    org = data["members"]
+    if org:
+        # org1 =  serializeDict(org)["members"]
+        if len(org) != 0:
+        # print(org1)
+            if data["value"]:
+                sorted_list = sorted(org, key=lambda x: x[data["col"]])
+                # for i in sorted_list:
+                #     i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
+                #     i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
+                return sorted_list
+            else:
+                sorted_list = sorted(org, key=lambda x: x[data["col"]], reverse=True)
+                # for i in sorted_list:
+                #     i["expiry_date"] = i["expiry_date"].strftime("%Y-%m-%d")
+                #     i["start_date"] = i["start_date"].strftime("%Y-%m-%d")
+                return sorted_list
+            
 
-#         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
-#     except smtplib.SMTPAuthenticationError as e:
-#         raise HTTPException(status_code=401, detail=str(e))
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+    else:
+        return {"error":"Organization not Found","success":False}
+
+
+def send_email(to: str, subject: str, message: str):
+    try:
+        # Create an EmailMessage
+        email = EmailMessage()
+        email.set_content(message)
+        email["Subject"] = subject
+        email["From"] = gmail_user
+        email["To"] = to
+
+        # Connect to Gmail SMTP server
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            # Log in to the Gmail account
+            server.login(gmail_user, gmail_password)
+            # Send the email
+            server.send_message(email)
+
+        return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
+    except smtplib.SMTPAuthenticationError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # @event.get("/generate-qr")
 # async def generate_qr(data: str):
@@ -1155,3 +1444,24 @@ async def search_org_byname(data:dict):
     #     # Clean up: Delete the temporary image file
     #     if img_path and os.path.exists(img_path):
     #         os.remove(img_path)
+
+
+
+# Subject= "Subscription Status Update"
+#                 message = """
+                   
+#                     Dear KD,
+#                     We hope this message finds you well. We are writing to inform you about the status of your subscription to organizations on EventWiz.
+
+#                     Great news! You have been successfully subscribed to [Organization Name]. Welcome to our community, and we look forward to your active participation.
+
+#                     Additionally, if you had previously applied for a subscription to another organization, we regret to inform you that your application for [Other Organization Name] has been removed. This is because you are already a valued member of [Accepted Organization Name].
+
+#                     If you wish to join [Other Organization Name], we kindly ask you to create a separate account for this organization. Feel free to reach out if you have any questions or need assistance in the process.
+
+#                     Thank you for being a part of EventWiz, and we look forward to your continued engagement.
+
+#                     Best regards,
+#                     EventWiz Team
+#                 """
+#                 send_email(to="kunjdetroja52@gmail.com", subject=Subject, message=message)
