@@ -375,11 +375,11 @@ function OrganizationOtherEvent() {
                                                     : "col-3 maincardbody"
                                             }
                                         >
-                                            <div class="main">
-                                                <ul class="othercards">
-                                                    <li class="othercards_item">
-                                                        <div class="othercard">
-                                                            <div class="othercard_image">
+                                            <div className="main">
+                                                <ul className="othercards">
+                                                    <li className="othercards_item">
+                                                        <div className="othercard">
+                                                            <div className="othercard_image">
                                                                 <img
                                                                     className="othermaincardimage"
                                                                     src={post.event_image}
@@ -387,35 +387,35 @@ function OrganizationOtherEvent() {
                                                                     onClick={() => handlepostdetails(post)}
                                                                     style={{ cursor: "pointer" }}
                                                                 />
-                                                                <span class="card_price cardspantag">
+                                                                <span className="card_price cardspantag">
                                                                     <span>
                                                                         <FaRupeeSign />
                                                                         {post.ticket_price}
                                                                     </span>
                                                                 </span>
                                                             </div>
-                                                            <div class="othercard_content">
+                                                            <div className="othercard_content">
                                                                 <h2
-                                                                    class="card_title"
+                                                                    className="card_title"
                                                                     onClick={() => handlepostdetails(post)}
                                                                     style={{ cursor: "pointer" }}
                                                                 >
                                                                     {post.event_title}
                                                                 </h2>
-                                                                <div class="othercard_text">
-                                                                    <p class="cardptag">{post.event_highlight}</p>
-                                                                    <p class="cardptag">
+                                                                <div className="othercard_text">
+                                                                    <p className="cardptag">{post.event_highlight}</p>
+                                                                    <p className="cardptag">
                                                                         Venue: {post.venue_name}
                                                                     </p>
-                                                                    <span class="cardptag">
+                                                                    <span className="cardptag">
                                                                         Venue City: {post.venue_city}
                                                                     </span>
-                                                                    <p class="cardptag">
+                                                                    <p className="cardptag">
                                                                         Event Type:
                                                                         <strong> {post.type} </strong>{" "}
                                                                     </p>
                                                                     <hr className="cardhrtag" />
-                                                                    <p class="cardptag">
+                                                                    <p className="cardptag">
                                                                         Event Dates:
                                                                         <strong>
                                                                             {" "}

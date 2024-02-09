@@ -282,31 +282,31 @@ function AdminAuthorityOrgDetails() {
               <div className="col-12">
                 <br />
                 <div>
-                  <section class="light">
-                    <div class="container py-2">
-                      <article class="postcard light blue">
-                        <a class="postcard__img_link" href="#">
+                  <section className="light">
+                    <div className="container py-2">
+                      <article className="postcard light blue">
+                        <span className="postcard__img_link" >
                           <img
-                            class="postcard__img"
+                            className="postcard__img"
                             src={orgData.background_image }
                             alt="Image Title"
                           />
-                        </a>
-                        <div class="postcard__text t-dark">
-                          <h1 class="postcard__title blue">
+                        </span>
+                        <div className="postcard__text t-dark">
+                          <h1 className="postcard__title blue">
                             <h4>{orgData.clubname}</h4>
                           </h1>
-                          <div class="postcard__subtitle small">
+                          <div className="postcard__subtitle small">
                             <strong>{orgData.ownname}</strong>
                             <br />
                             <strong> {orgData.email}</strong>
                           </div>
-                          <div class="postcard__bar"></div>
-                          <div class="postcard__preview-txt">
+                          <div className="postcard__bar"></div>
+                          <div className="postcard__preview-txt">
                             {orgData.desc}
                           </div>
                           <br />
-                          <div class="row">
+                          <div className="row">
                             <span className="col">
                               <strong>Contact Number:</strong> {orgData.pnumber}
                             </span>
@@ -315,7 +315,7 @@ function AdminAuthorityOrgDetails() {
                             </span>
                           </div>
                           <br />
-                          <div class="">
+                          <div className="">
                             <strong>Address:</strong> {orgData.address}
                           </div>
                           <div>

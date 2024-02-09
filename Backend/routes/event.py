@@ -463,6 +463,8 @@ async def adminside_rejectorg(data: dict):
         return {"error": "Nothing To Update", "success": False}
 
 
+
+
 # Routes for Organization -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Get all Members of Organization by Clubname
@@ -597,6 +599,13 @@ async def add_member(id: str, member: User):
 
 @event.put("/organizationupdatememberdetails/")
 async def update_member_details(data: dict):
+    d1 = data["formData"]
+    email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+    if re.match(email_pattern, d1["email"]) == None:
+        return {"error": "Invalid Email Format", "success": False}
+    number_pattern = r'^\d{10}$'
+    if re.match(number_pattern, str(d1["pnumber"])) == None:
+        return {"error": "Phone Number in 10 Digits", "success": False}
     organisation = conn.event.organization.find_one(
         {"clubname": data["clubname"]})
     if organisation:
@@ -1033,6 +1042,38 @@ async def otherorg_eventpost_bytitle(data: dict):
             return {"error": "No post found", "success": False}
     return {"error": "No organisation found", "success": False}
 
+# Organization Feedback
+@event.post("/organisationfeedback/")
+async def organisation_feedback(data: dict):
+    org = conn.event.organization.find_one({"clubname": data["clubname"]})
+    if org:
+        org1 = serializeDict(org)
+        org1["feedback"].append(data["feedback"])
+        conn.event.organization.find_one_and_update(
+            {"clubname": data["clubname"]}, {"$set": {"feedback": org1["feedback"]}})
+        return {"data": "Feedback Submitted Successfully", "success": True}
+    else:
+        return {"error": "Organization Not Found", "success": False}
+
+# Feedback for Admin by Organization
+@event.post("/adminfeedback/")
+async def admin_feedback(data: dict):
+    admin = conn.event.admin.find_one()
+    if admin:
+        admin1 = serializeDict(admin)
+        if data["name"] =="organization":
+            admin1["orgfeedback"].append(data["feedback"])
+            conn.event.admin.find_one_and_update(
+                {"username":"kunj"}, {"$set": {"orgfeedback": admin1["feedback"]}})
+            return {"data": "Feedback Submitted Successfully", "success": True}
+        elif data["name"] =="user":
+            admin1["userfeedback"].append(data["feedback"])
+            conn.event.admin.find_one_and_update(
+                {"username":"kunj"}, {"$set": {"userfeedback": admin1["feedback"]}})
+            return {"data": "Feedback Submitted Successfully", "success": True}
+    else:
+        return {"error": "Admin Not Found", "success": False}
+
 
 # Routes for Post ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1162,6 +1203,20 @@ async def delete_user(id):
         return True
     else:
         return {"error": "no post found", "success": False}
+
+
+# Post Feedback
+@event.post("/postfeedback/")
+async def post_feedback(data: dict):
+    post = conn.event.post.find_one({"_id": ObjectId(data["postid"])})
+    if post:
+        post1 = serializeDict(post)
+        post1["feedback"].append(data["feedback"])
+        conn.event.post.find_one_and_update(
+            {"_id": ObjectId(data["postid"])}, {"$set": {"feedback": post1["feedback"]}})
+        return {"data": "Feedback Submitted Successfully", "success": True}
+    else:
+        return {"error": "Post Not Found", "success": False}
 
 
 # Routes For User -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>

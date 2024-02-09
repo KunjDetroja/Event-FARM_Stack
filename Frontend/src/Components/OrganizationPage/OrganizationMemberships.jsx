@@ -175,9 +175,9 @@ function OrganizationMemberships() {
                     </button>
                   </td>
                   {/* <td className="trtext">
-                    <div class="form-check form-switch">
+                    <div className="form-check form-switch">
                       <input
-                        class="form-check-input"
+                        className="form-check-input"
                         type="checkbox"
                         role="switch"
                         id="flexSwitchCheckChecked"

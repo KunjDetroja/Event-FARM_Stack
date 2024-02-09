@@ -144,25 +144,25 @@ function AdminOrg() {
                                 {details && details.length ? (
                                     details.map((org) => (
                                         <div key={org._id} className="col-4 maincardbody">
-                                            <div class="col">
+                                            <div className="col">
                                                 <section
-                                                    class="mx-auto my-5"
+                                                    className="mx-auto my-5"
                                                     style={{ maxWidth: "23rem" }}
                                                 >
-                                                    <div class="card testimonial-card mt-2 mb-3">
-                                                        <div class="card-up aqua-gradient"></div>
-                                                        <div class="avatar mx-auto white">
+                                                    <div className="card testimonial-card mt-2 mb-3">
+                                                        <div className="card-up aqua-gradient"></div>
+                                                        <div className="avatar mx-auto white">
                                                             <img
                                                                 src={org.logo}
-                                                                class="rounded-circle img-fluid"
+                                                                className="rounded-circle img-fluid"
                                                                 alt="woman avatar"
                                                                 onClick={() => handleorgdetails(org)}
                                                                 style={{ cursor: "pointer" }}
                                                             />
                                                         </div>
-                                                        <div class="card-body text-center">
+                                                        <div className="card-body text-center">
                                                             <h4
-                                                                class="card-title font-weight-bold"
+                                                                className="card-title font-weight-bold"
                                                                 onClick={() => handleorgdetails(org)}
                                                                 style={{ cursor: "pointer" }}
                                                             >
@@ -173,7 +173,7 @@ function AdminOrg() {
                                                                 <strong>Email: {org.email}</strong>
                                                             </p>
                                                             <p>
-                                                                <i class="fas fa-quote-left"></i>
+                                                                <i className="fas fa-quote-left"></i>
                                                                 <span style={{ marginLeft: "5px" }}>
                                                                     {org.address}
                                                                 </span>

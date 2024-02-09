@@ -5,8 +5,8 @@ import "./NotFoundCss.css"
 function NotFound() {
     return (
         <div>
-            {/* <div class="container">
-                <div class="four1">
+            {/* <div className="container">
+                <div className="four1">
                     <svg width="133px" height="234px" viewBox="0 0 133 234" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                         <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="404" transform="translate(0.000000, -2.000000)" fill="#F85656">
@@ -17,7 +17,7 @@ function NotFound() {
                         </g>
                     </svg>
                 </div>
-                <div class="zero">
+                <div className="zero">
                     <svg width="148px" height="237px" viewBox="0 0 148 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                         <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="404" transform="translate(-148.000000, 0.000000)">
@@ -33,7 +33,7 @@ function NotFound() {
                         </g>
                     </svg>
                 </div>
-                <div class="four2">
+                <div className="four2">
                     <svg width="133px" height="234px" viewBox="0 0 133 234" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                         <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="404" transform="translate(0.000000, -2.000000)" fill="#F85656">
@@ -47,42 +47,42 @@ function NotFound() {
                 <h1>PAGE NOT FOUND</h1>
             </div> */}
 
-            <div class="ttext"><p>404</p></div>
-            <div class="ccontainer">
-                <div class="caveman">
-                    <div class="leg">
-                        <div class="foot"><div class="fingers"></div></div>
+            <div className="ttext"><p>404</p></div>
+            <div className="ccontainer">
+                <div className="caveman">
+                    <div className="leg">
+                        <div className="foot"><div className="fingers"></div></div>
                     </div>
-                    <div class="leg">
-                        <div class="foot"><div class="fingers"></div></div>
+                    <div className="leg">
+                        <div className="foot"><div className="fingers"></div></div>
                     </div>
-                    <div class="shape">
-                        <div class="circle"></div>
-                        <div class="circle"></div>
+                    <div className="shape">
+                        <div className="circle"></div>
+                        <div className="circle"></div>
                     </div>
-                    <div class="head">
-                        <div class="eye"><div class="nose"></div></div>
-                        <div class="mouth"></div>
+                    <div className="head">
+                        <div className="eye"><div className="nose"></div></div>
+                        <div className="mouth"></div>
                     </div>
-                    <div class="arm-right"><div class="club"></div></div>
+                    <div className="arm-right"><div className="club"></div></div>
                 </div>
                 
-                <div class="caveman">
-                    <div class="leg">
-                        <div class="foot"><div class="fingers"></div></div>
+                <div className="caveman">
+                    <div className="leg">
+                        <div className="foot"><div className="fingers"></div></div>
                     </div>
-                    <div class="leg">
-                        <div class="foot"><div class="fingers"></div></div>
+                    <div className="leg">
+                        <div className="foot"><div className="fingers"></div></div>
                     </div>
-                    <div class="shape">
-                        <div class="circle"></div>
-                        <div class="circle"></div>
+                    <div className="shape">
+                        <div className="circle"></div>
+                        <div className="circle"></div>
                     </div>
-                    <div class="head">
-                        <div class="eye"><div class="nose"></div></div>
-                        <div class="mouth"></div>
+                    <div className="head">
+                        <div className="eye"><div className="nose"></div></div>
+                        <div className="mouth"></div>
                     </div>
-                    <div class="arm-right"><div class="club"></div></div>
+                    <div className="arm-right"><div className="club"></div></div>
                 </div>
             </div>
         </div>

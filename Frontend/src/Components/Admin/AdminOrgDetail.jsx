@@ -326,13 +326,14 @@ function AdminOrgDetail() {
                                     <section className="light">
                                         <div className="container py-2">
                                             <article className="postcard light blue">
-                                                <a className="postcard__img_link" href="#">
+                                                
+                                                <span className="postcard__img_link">
                                                     <img
                                                         className="postcard__img"
                                                         src={orgData.background_image}
-                                                        alt="Image Title"
+                                                        alt="Title"
                                                     />
-                                                </a>
+                                                </span>
                                                 <div className="postcard__text t-dark">
                                                     <div className="postcard__title blue">
                                                         <h1>{orgData.clubname}</h1>

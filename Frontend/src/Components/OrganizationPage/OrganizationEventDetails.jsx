@@ -37,13 +37,13 @@ function OrganizationEventDetails() {
     <>
       <OrganizationNavbar/>
       <div className="detailedPostBody">
-        <div class="container">
-          <div class="orgcard">
-            <div class="container-fliud">
-              <div class="orgwrapper row">
-                <div class="orgpreview col-md-6">
-                  <div class="orgpreview-pic orgtab-content">
-                    <div class="orgtab-pane active" id="orgpic-1">
+        <div className="container">
+          <div className="orgcard">
+            <div className="container-fliud">
+              <div className="orgwrapper row">
+                <div className="orgpreview col-md-6">
+                  <div className="orgpreview-pic orgtab-content">
+                    <div className="orgtab-pane active" id="orgpic-1">
                       <img
                         src={postData["event_image"]}
                         className="detailedpostimg"
@@ -55,15 +55,15 @@ function OrganizationEventDetails() {
                     </div>
                   </div>
                 </div>
-                <div class="orgdetails col-md-6">
-                  <h3 class="orgproduct-title">{postData["event_title"]}</h3>
-                  <h4 class="orgprice">
+                <div className="orgdetails col-md-6">
+                  <h3 className="orgproduct-title">{postData["event_title"]}</h3>
+                  <h4 className="orgprice">
                     current price:{" "}
                     <span className="orgdetailedspan">
                       Rs.{postData["ticket_price"]}
                     </span>
                   </h4>
-                  <p class="orgproduct-description">
+                  <p className="orgproduct-description">
                     {postData["event_highlight"]}
                   </p>
                   <br />
@@ -98,7 +98,7 @@ function OrganizationEventDetails() {
                     <div>
                       <br />
                       <h4>Event Description</h4>
-                      <p class="orgproduct-description">
+                      <p className="orgproduct-description">
                         {postData["event_desc"]}
                       </p>
                     </div>
@@ -108,7 +108,7 @@ function OrganizationEventDetails() {
                     <div>
                       <br />
                       <h4>Timings</h4>
-                      <p class="orgvote">
+                      <p className="orgvote">
                         <strong>Start Time: {postData["start_time"]}</strong>
                         <br />
                         <strong>End Time: {postData["end_time"]}</strong>
@@ -120,7 +120,7 @@ function OrganizationEventDetails() {
                     <div>
                       <br />
                       <h4>Date Schedule</h4>
-                      <p class="orgvote">
+                      <p className="orgvote">
                         <strong>
                           Start Date: {postData["event_start_date"]}
                         </strong>
@@ -135,19 +135,19 @@ function OrganizationEventDetails() {
                     <strong> {postData.type} </strong>{" "}
                   </div>
                   <hr />
-                  <div class="orgsizes">
+                  <div className="orgsizes">
                     Organizers Details:
                     <hr />
-                    <p class="orgsize" data-toggle="tooltip" title="small">
+                    <p className="orgsize" data-toggle="tooltip" title="small">
                       Name: {postData["event_organizer_name"]}
                     </p>
-                    <p class="orgsize" data-toggle="tooltip" title="medium">
+                    <p className="orgsize" data-toggle="tooltip" title="medium">
                       Email: {postData["event_organizer_email"]}
                     </p>
-                    <p class="orgsize" data-toggle="tooltip" title="large">
+                    <p className="orgsize" data-toggle="tooltip" title="large">
                       Ph. Number: {postData["event_organizer_pnumber"]}
                     </p>
-                    {/* <span class="size" data-toggle="tooltip" title="xtra large">
+                    {/* <span className="size" data-toggle="tooltip" title="xtra large">
                       xl
                     </span> */}
                   </div>

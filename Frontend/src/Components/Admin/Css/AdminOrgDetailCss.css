@@ -63,9 +63,10 @@
   }
   .postcard .postcard__text {
     padding: 1.5rem;
-    position: relative;
+    /* position: relative; */
     display: flex;
-    flex-direction: column;
+    /* justify-content: center; */
+    /* flex-direction: column; */
   }
   .postcard .postcard__preview-txt {
     /* overflow: hidden;     */
