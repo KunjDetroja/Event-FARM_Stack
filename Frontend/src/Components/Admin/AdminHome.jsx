@@ -1,11 +1,195 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminNavbar from './AdminNavbar'
+import api from '../../api'
+import { toast } from "react-toastify";
+import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
 
 function AdminHome() {
+  const [content, setContent] = useState();
+  const [eventContent, setEventContent] = useState();
+  const [totalClubname, setTotalClubname] = useState();
+  const [orgProfit, setOrgProfit] = useState();
+  const [selectedOption, setSelectedOption] = useState();
+
+  const handleSelectClub = (e) => {
+    setSelectedOption(e.target.value);
+  };
+
+
+  const handleClubname = async () => {
+    try {
+      const response = await api.get("/clubnames/");
+      if (response.data.success !== false) {
+        setTotalClubname(response.data);
+        setSelectedOption(response.data[0]);
+      } else {
+        toast.error("error in fetching data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleorgcontent = async () => {
+    const data = { clubname: selectedOption };
+
+    try {
+      const response = await api.post("/profitperorg", data);
+      if (response.data.success !== false) {
+        console.log(response.data);
+        setOrgProfit(response.data)
+      } else {
+        toast.error("error in fetching data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlefetchingcontent = async () => {
+    try {
+      const response = await api.get("/subscribeprofitadmin");
+      if (response.data.success !== false) {
+        console.log(response.data);
+        setContent(response.data)
+      } else {
+        toast.error("error in fetching data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlefetchingeventcontent = async () => {
+    try {
+      const response = await api.get("/eventprofitadmin");
+      if (response.data.success !== false) {
+        console.log(response.data);
+        setEventContent(response.data)
+      } else {
+        toast.error("error in fetching data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    handleorgcontent();
+  }, [selectedOption]);
+  useEffect(() => {
+    handleClubname();
+    handlefetchingeventcontent();
+    handlefetchingcontent();
+  }, []);
   return (
     <>
-    <AdminNavbar/>
-    Home page
+      <AdminNavbar />
+
+      <div className="row mt-5 justify-content-center">
+        <div className="col-md-5  border rounded p-2 me-3">
+          {content && (
+                  <div style={{ height: 300 }}>
+                    <ResponsiveContainer>
+                      <AreaChart
+                        width={500}
+                        height={400}
+                        data={content}
+                        margin={{ right: 30 }}
+                      >
+                        <YAxis tick={{ fill: "#0e2643" }} />
+                        <XAxis dataKey="year" tick={{ fill: "#0e2643" }} />
+                        {/* <CartesianGrid strokeDasharray="5 5" /> */}
+                        <Tooltip />
+                        <Legend />
+                        <Area
+                          type="monotone"
+                          dataKey="Subscribers"
+                          stroke="#0e2643"
+                          fill="#8b5cf6"
+                          stackId="1"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+          )}
+        </div>
+        <div className="col-md-5  border rounded p-2 me-2">
+          {eventContent && (
+            
+                  <div style={{ height: 300 }}>
+                    <ResponsiveContainer>
+                      <AreaChart
+                        width={500}
+                        height={400}
+                        data={eventContent}
+                        margin={{ right: 30 }}
+                      >
+                        <YAxis tick={{ fill: "#0e2643" }} />
+                        <XAxis dataKey="year" tick={{ fill: "#0e2643" }} />
+                        {/* <CartesianGrid strokeDasharray="5 5" /> */}
+                        <Tooltip />
+                        <Legend />
+                        <Area
+                          type="monotone"
+                          dataKey="Events"
+                          stroke="#0e2643"
+                          fill="#8b5cf6"
+                          stackId="1"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+               
+          )}
+        </div>
+      </div>
+
+
+
+      <div>
+        {totalClubname && (
+          <>
+            <select value={selectedOption} onChange={handleSelectClub}>
+              {totalClubname.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
+      </div>
+      {orgProfit && (
+        <div className=''>
+          <div className="row justify-content-center">
+            <div className="col-md-5 border rounded p-2 me-2">
+              <div style={{ height: 300 }}>
+                <ResponsiveContainer>
+                  <AreaChart
+                    width={500}
+                    height={400}
+                    data={orgProfit}
+                    margin={{ right: 30 }}
+                  >
+                    <YAxis tick={{ fill: "#0e2643" }} />
+                    <XAxis dataKey="year" tick={{ fill: "#0e2643" }} />
+                    {/* <CartesianGrid strokeDasharray="5 5" /> */}
+                    <Tooltip />
+                    <Legend />
+                    <Area
+                      type="monotone"
+                      dataKey="Revenue"
+                      stroke="#0e2643"
+                      fill="#8b5cf6"
+                      stackId="1"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
     </>
   )
 }

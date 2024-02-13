@@ -5,6 +5,7 @@ from model.event import *
 from schemas.event import serializeDict, serializeList
 from bson import ObjectId, Regex
 import re
+from collections import defaultdict
 # import qrcode
 
 from email.message import EmailMessage
@@ -67,11 +68,8 @@ async def admin_login(data: dict):
 async def org_search_filters(data: dict):
 
     memberlist = data["memberlist"]
-    # print(memberlist)
     newdata = data
     del newdata["memberlist"]
-
-    # print(newdata)
     if (newdata["expiry_date"] != ''):
         # data["expiry_date"] = data["expiry_date"].strftime("%Y-%m-%d")
         newdata["expiry_date"] = datetime.strptime(
@@ -80,18 +78,10 @@ async def org_search_filters(data: dict):
         # data["start_date"] = data["start_date"].strftime("%Y-%m-%d")
         newdata["start_date"] = datetime.strptime(
             newdata["start_date"], "%Y-%m-%d")
-
-    # print(data)
     filtered_data = {}
     for key, value in newdata.items():
         if (value != '' or value != ""):
             filtered_data[key] = value
-    # print(filtered_data)
-
-    # if not filtered_data:
-    #     return {"error": "Empty Filter inputs", "success": False}
-
-    # print("inside else")
     result = []
     partial_name = data.get("membername", "")
     regex_pattern = re.compile(f"{re.escape(partial_name)}.*", re.IGNORECASE)
@@ -113,8 +103,6 @@ async def org_search_filters(data: dict):
                     result.append(memberdict)
             else:
                 result.append(memberdict)
-
-    # print(result)
     if result:
         for singledict in result:
             singledict["expiry_date"] = singledict["expiry_date"].strftime(
@@ -135,7 +123,6 @@ async def adminside_orgmembertablefilter(filters: dict):
     for key, value in data.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    # print(filtered_data)
     content = []
     if (len(filtered_data) != 0):
 
@@ -144,13 +131,7 @@ async def adminside_orgmembertablefilter(filters: dict):
             if value:
                 regex_patterns[key] = re.compile(
                     f'^{re.escape(value)}', re.IGNORECASE)
-
-        # print (regex_patterns)
-        # organisation = conn.event.organization.find_one({"_id":ObjectId(orgid)})
         membersList = filters["memberlist"]
-        # if membersList:
-        # org1 = serializeDict(organisation)
-        # membersList = org1["members"]
         if (membersList != []):
             for memberdict in membersList:
                 match = all(regex.match(str(memberdict.get(key, '')))
@@ -182,11 +163,9 @@ async def loggedin_members(data: dict):
         if singledict["loggedin"] == True:
             logginemembers.append(singledict)
     if logginemembers:
-        # print(logginemembers)
         return logginemembers
     else:
         return {"error": "No loggedin members", "success": False}
-        # print("no members has loggedin")
 
 
 # admin side loggedin members
@@ -198,11 +177,9 @@ async def inactive_members(data: dict):
         if singledict["loggedin"] == False:
             inactivemembers.append(singledict)
     if inactivemembers:
-        # print(logginemembers)
         return inactivemembers
     else:
         return {"error": "No loggedin members", "success": False}
-        # print("no members has loggedin")
 
 # fetching all users
 
@@ -211,7 +188,6 @@ async def inactive_members(data: dict):
 async def adminside_allusers():
     result = conn.event.user.find({})
     result = serializeList(result)
-    # print(result)
     if result:
         for i in result:
             if i["expiry_date"]:
@@ -230,12 +206,10 @@ async def adminside_allnewusers():
     newuserslist = []
     result = conn.event.user.find({})
     result = serializeList(result)
-    # print(result)
     if result:
         for i in result:
             if (i["memberid"] == None):
                 newuserslist.append(i)
-        # print(newuserslist)
         return newuserslist
     else:
         return {"error": "No New Users", "success": False}
@@ -250,11 +224,6 @@ async def adminside_searchuser(data: dict):
     for key, value in data.items():
         if (value != '' or value != ""):
             filtered_data[key] = value
-
-    # if not filtered_data:
-    #     return {"error": "Empty Filter inputs", "success": False}
-
-    # print("inside else")
     result = []
     partial_name = data.get("membername", "")
     regex_pattern = re.compile(f"{re.escape(partial_name)}.*", re.IGNORECASE)
@@ -262,8 +231,6 @@ async def adminside_searchuser(data: dict):
     for memberdict in memberlist:
         if "name" in memberdict and re.match(regex_pattern, memberdict["name"]):
             result.append(memberdict)
-
-    # print(result)
     if result:
         return result
     else:
@@ -280,7 +247,6 @@ async def allusers_tablefilters(data: dict):
     for key, value in allfiltersdata.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    # print(filtered_data)
 
     content = []
     if (len(filtered_data) != 0):
@@ -290,11 +256,8 @@ async def allusers_tablefilters(data: dict):
             if value:
                 regex_patterns[key] = re.compile(
                     f'^{re.escape(value)}.*', re.IGNORECASE)
-        # print(regex_patterns)
 
         membersList = serializeList(conn.event.user.find({}))
-
-        # print(membersList)
         if membersList:
 
             for memberdict in membersList:
@@ -302,7 +265,6 @@ async def allusers_tablefilters(data: dict):
                             for key, regex in regex_patterns.items())
                 if match:
                     content.append(memberdict)
-            # print(content)
             if content:
                 for i in content:
                     if i["expiry_date"]:
@@ -325,12 +287,9 @@ async def allusers_tablefilters(data: dict):
 @event.get("/allappliedorg")
 async def adminside_allappliedorg():
     appliedlist = serializeList(conn.event.admin.find())
-    # print(appliedlist)
     content = []
     for singledict in appliedlist:
         content = singledict["applied_org"]
-
-    # print(content)
     if (len(content) != 0):
         return serializeList(content)
     else:
@@ -341,8 +300,6 @@ async def adminside_allappliedorg():
 
 @event.post("/searchorgbyname")
 async def adminside_searchorgbyname(data: dict):
-    # clubname = data["clubname"]
-    # print(clubname)
     search_org = data["clubname"]
     regex_pattern = f"^{re.escape(search_org)}.*"
     pipeline = [
@@ -354,11 +311,9 @@ async def adminside_searchorgbyname(data: dict):
     content = []
 
     if adminlist:
-        # print(adminlist)
         for admin in adminlist:
             org_dict = admin.get("applied_org", {})
             content.append(org_dict)
-        # print(content)
         if content:
             return content
         else:
@@ -371,14 +326,12 @@ async def adminside_searchorgbyname(data: dict):
 
 @event.post("/appliedorgtablefilters")
 async def adminside_applied_orgtablefilters(data: dict):
-    # print(data)
     allfiltersdata = data["data"]
 
     filtered_data = {}
     for key, value in allfiltersdata.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    # print(filtered_data)
     content = []
 
     if (len(filtered_data) != 0):
@@ -388,7 +341,6 @@ async def adminside_applied_orgtablefilters(data: dict):
             if value:
                 regex_patterns[key] = re.compile(
                     f'^{re.escape(value)}.*', re.IGNORECASE)
-        # print(regex_patterns)
 
         membersList = serializeList(conn.event.user.find({}))
 
@@ -403,7 +355,6 @@ async def adminside_applied_orgtablefilters(data: dict):
                             for key, regex in regex_patterns.items())
                 if match:
                     content.append(memberdict)
-            # print(content)
             if content:
                 return content
             else:
@@ -420,7 +371,6 @@ async def adminside_applied_orgtablefilters(data: dict):
 
 @event.post("/acceptingorg")
 async def adminside_acceptorg(data: dict):
-    # print(data["data"])
     acceptedOrg = data["data"]
     result = conn.event.organization.insert_one(acceptedOrg)
     adminlist = serializeList(conn.event.admin.find())
@@ -430,7 +380,6 @@ async def adminside_acceptorg(data: dict):
 
         updated_org = [i for i in appliedorglist if i["clubname"]
                        != acceptedOrg["clubname"]]
-        # #print("Updated Member list",updated_members)
         content = conn.event.admin.find_one_and_update(
             {"_id": ObjectId(singleadmin["_id"])}, {"$set": {"applied_org": updated_org}})
     if content:
@@ -443,7 +392,6 @@ async def adminside_acceptorg(data: dict):
 
 @event.post("/rejectingorg")
 async def adminside_rejectorg(data: dict):
-    # print(data["data"])
     acceptedOrg = data["data"]
     result = conn.event.rejectedorg.insert_one(acceptedOrg)
 
@@ -454,7 +402,6 @@ async def adminside_rejectorg(data: dict):
 
         updated_org = [i for i in appliedorglist if i["clubname"]
                        != acceptedOrg["clubname"]]
-        # #print("Updated Member list",updated_members)
         content = conn.event.admin.find_one_and_update(
             {"_id": ObjectId(singleadmin["_id"])}, {"$set": {"applied_org": updated_org}})
     if content:
@@ -463,6 +410,118 @@ async def adminside_rejectorg(data: dict):
         return {"error": "Nothing To Update", "success": False}
 
 
+# Total Profit by Subscribe Users
+@event.post("/totalprofit")
+async def total_profit():
+    profit = 0
+    org = serializeList(conn.event.organization.find())
+    if len(org):
+        for singleorg in org:
+            memtype = singleorg["memtype"]
+            for singlemember in singleorg["members"]:
+                if singlemember["subscribe"]:
+                    for singlememtype in memtype:
+                        if singlemember["membertype"] == singlememtype["type"]:
+                            profit += singlememtype["price"]
+        profit = profit*0.12
+        return profit
+
+# Total Profit by Subscribe Users Yearly
+@event.get("/subscribeprofitadmin")
+async def total_profit_yearly_Admin():
+    profit = {}
+    tprofit = []
+    result = []
+    org = serializeList(conn.event.organization.find())
+    if len(org):
+        for singleorg in org:
+            memtype = singleorg["memtype"]
+            for singlemember in singleorg["members"]:
+                if singlemember["subscribe"] :
+                    for singlememtype in memtype:
+                        if singlemember["membertype"] == singlememtype["type"]:
+                            if singlemember["start_date"].year in profit:
+                                profit[int(singlemember["start_date"].year)] += singlememtype["price"]
+                            else:
+                                profit[int(singlemember["start_date"].year)] = singlememtype["price"]
+        profit = dict(sorted(profit.items()))
+        for key, value in profit.items():
+            tprofit.append({"year": key, "Subscribers": value * 0.12})
+        return tprofit
+    else:
+        return {"error": "No Organization", "success": False}
+
+# Total Profit by Events Yearly
+@event.get("/eventprofitadmin")
+async def event_profit_admin():
+    post1 = conn.event.post.find()
+    post2  = conn.event.pastevent.find()
+    profit = {}
+    tprofit = []
+    result = []
+    if post1:
+        for singlepost in post1:
+            totalparticipate = len(singlepost["participate"])
+            totalprofit = totalparticipate * singlepost["ticket_price"]
+            if singlepost["event_start_date"].year in profit:
+                profit[int(singlepost["event_start_date"].year)] += totalprofit
+            else:
+                profit[int(singlepost["event_start_date"].year)] = totalprofit
+    if post2:
+        for singlepost in post2:
+            totalparticipate = len(singlepost["participate"])
+            totalprofit = totalparticipate * singlepost["ticket_price"]
+            if singlepost["event_start_date"].year in profit:
+                profit[int(singlepost["event_start_date"].year)] += totalprofit
+            else:
+                profit[int(singlepost["event_start_date"].year)] = totalprofit
+    # result.append(profit)
+    profit = dict(sorted(profit.items()))
+    for key, value in profit.items():
+        tprofit.append({"year": key, "Events": int(value * 0.04)})
+    return tprofit
+                    
+# Total Profit per Organization
+@event.post("/profitperorg")
+async def profit_per_org(data:dict):
+    profit = {}
+    eventprofit = {}
+    tprofit = []
+    org  = conn.event.organization.find_one({"clubname":data["clubname"]})
+    if org:
+        orgevent1  = conn.event.post.find({"clubname":data["clubname"]})
+        orgevent2  = conn.event.pastevent.find({"clubname":data["clubname"]})
+        memtype = org["memtype"]
+        for singlemember in org["members"]:
+            for singlememtype in memtype:
+                if singlemember["subscribe"] and singlemember["membertype"] == singlememtype["type"]:
+                    if singlemember["start_date"].year in profit:
+                        profit[int(singlemember["start_date"].year)] += singlememtype["price"] * 0.12
+                    else:
+                        profit[int(singlemember["start_date"].year)] = singlememtype["price"] * 0.12
+        for singlepost in orgevent1:
+            totalparticipate = len(singlepost["participate"])
+            totalprofit = totalparticipate * singlepost["ticket_price"]
+            if singlepost["event_start_date"].year in eventprofit:
+                eventprofit[int(singlepost["event_start_date"].year)] += totalprofit
+            else:
+                eventprofit[int(singlepost["event_start_date"].year)] = totalprofit
+        for singlepost in orgevent2:
+            totalparticipate = len(singlepost["participate"])
+            totalprofit = totalparticipate * singlepost["ticket_price"]
+            if singlepost["event_start_date"].year in eventprofit:
+                eventprofit[int(singlepost["event_start_date"].year)] += totalprofit
+            else:
+                eventprofit[int(singlepost["event_start_date"].year)] = totalprofit
+        for key, value in eventprofit.items():
+            if key in profit:
+                profit[key] += value * 0.04
+            else:
+                profit[key] = value * 0.04
+        profit = dict(sorted(profit.items()))
+        for key, value in profit.items():
+            tprofit.append({"year": key, "Revenue": int(value)})
+        return tprofit
 
 
 # Routes for Organization -------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -486,7 +545,6 @@ async def organization_member(data: dict):
 @event.post("/organisationsignup/")
 async def create_organization(organisation: Organization):
     appliedorg = dict(organisation)
-    # print(appliedorg)
     email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
     if re.match(email_pattern, appliedorg["email"]) == None:
         return {"error": "Invalid Email Format", "success": False}
@@ -505,7 +563,6 @@ async def create_organization(organisation: Organization):
         return {"error": "Username Already Exists", "success": False}
     else:
         adminlist = serializeList(conn.event.admin.find())
-        # print(adminlist)
         if adminlist:
             for singleadmindict in adminlist:
                 appliedlist = singleadmindict["applied_org"]
@@ -539,9 +596,7 @@ async def get_memtype(data: dict):
     type = []
     cursor = conn.event.organization.find(
         {"clubname": data["clubname"]}, {"memtype": 1, "_id": 0})
-    # print(serializeList(cursor))
     d1 = serializeList(cursor)
-    # print(d1[0]["memtype"])
     for i in d1[0]["memtype"]:
         type.append(i["type"])
     return type
@@ -617,16 +672,12 @@ async def update_member_details(data: dict):
             data["formData"]["expiry_date"], "%Y-%m-%d")
         data["formData"]["start_date"] = datetime.strptime(
             data["formData"]["start_date"], "%Y-%m-%d")
-        # member_id = data["memberId"]
-        # print(member_id)
         for memberdict in org1["members"]:
-            # print(memberdict["memberid"])
             if memberdict["memberid"] == data["memberId"]:
                 memberdict.update(data["formData"])
-                # print(org1["members"])
                 conn.event.organization.find_one_and_update({"_id": ObjectId(org1["_id"])}, {
                                                             "$set": {"members": org1["members"]}})
-                # print(org1["members"])
+               
                 return True
     else:
         return {"error": "Organisation not found", "success": False}
@@ -647,7 +698,6 @@ async def delete_member(data: dict):
                 conn.event.deletemember.insert_one(i)
         updated_members = [
             i for i in org1 if i["memberid"] != data["memberid"]]
-        # print("Updated Member list",updated_members)
         conn.event.organization.find_one_and_update({"_id": ObjectId(data["orgid"])}, {
                                                     "$set": {"members": updated_members}})
         return {"data": "Member deleted Successfully", "success": True}
@@ -700,11 +750,9 @@ async def add_membership(clubname: str, data: dict):
 async def membertable_filtering(filters: dict):
     data = filters["data"]
     filtered_data = {}
-    # print(data)
     for key, value in data.items():
         if (value != '' or value != ""):
             filtered_data[key] = re.escape(value)
-    # print(filtered_data)
     content = []
     if (len(filtered_data) != 0):
 
@@ -713,13 +761,7 @@ async def membertable_filtering(filters: dict):
             if value:
                 regex_patterns[key] = re.compile(
                     f'^{re.escape(value)}', re.IGNORECASE)
-
-        # print (regex_patterns)
-        # organisation = conn.event.organization.find_one({"_id":ObjectId(orgid)})
         membersList = filters["members"]
-        # if membersList:
-        # org1 = serializeDict(organisation)
-        # membersList = org1["members"]
         if (membersList != []):
             for memberdict in membersList:
                 match = all(regex.match(str(memberdict.get(key, '')))
@@ -752,7 +794,6 @@ async def filter_members(data: dict):
     if (data["start_date"] != ''):
         data["start_date"] = datetime.strptime(data["start_date"], "%Y-%m-%d")
 
-    # print(data)
     filtered_data = {}
     for key, value in data.items():
         if (value != '' or value != ""):
@@ -813,7 +854,6 @@ async def adminside_allappliedusers(data: dict):
 
 @event.post("/acceptingusersubscription")
 async def adminside_acceptorg(data: dict):
-    # print(data)
 
     memberdata = data["memberdata"]
     acceptedUser = data["data"]
@@ -829,16 +869,12 @@ async def adminside_acceptorg(data: dict):
     org = conn.event.organization.find({"_id": ObjectId(clubid)})
     org = serializeList(org)[0]
 
-    # print(org)
-
     memberslists = org["members"]
     orgappliedmemberslist = org["memapplied"]
-    # print(memberslists)
 
     allmemberid = []
     for singlemember in memberslists:
         allmemberid.append(singlemember["memberid"])
-    # print(allmemberid)
 
     if (len(allmemberid) != 0):
         if givenmemberid in allmemberid:
@@ -848,8 +884,6 @@ async def adminside_acceptorg(data: dict):
             acceptedUser["memberid"] = givenmemberid
             acceptedUser["start_date"] = startdate
             acceptedUser["expiry_date"] = expirydate
-
-            # print(acceptedUser)
 
             usersloggedindata = acceptedUser
 
@@ -862,9 +896,7 @@ async def adminside_acceptorg(data: dict):
 
             acceptedUser["loggedin"] = True
             acceptedUser["subscribe"] = True
-            # print(acceptedUser)
             del acceptedUser["clubname"]
-            # print(acceptedUser)
             if "_id" in acceptedUser:
                 del acceptedUser["_id"]
 
@@ -912,7 +944,6 @@ async def adminside_acceptorg(data: dict):
 
 @event.post("/rejectingsubscribinguser")
 async def adminside_rejectorg(data: dict):
-    # print(data["data"])
     rejectedUser = data["data"]
 
     conn.event.rejectedusers.insert_one(rejectedUser)
@@ -939,7 +970,6 @@ async def adminside_rejectorg(data: dict):
 @event.post("/getotherorgeventposts")
 async def get_other_org_eventposts(data: dict):
     response = conn.event.post.find({"clubname": {"$ne": data["clubname"]}})
-    # #print(serializeList(response))
     if response:
         lis = []
         d1 = {}
@@ -970,13 +1000,10 @@ async def other_org_eventpost_filters(data: dict):
 
         if field in ["event_start_date", "event_end_date"] and value != "":
             value = datetime.strptime(value, "%Y-%m-%d")
-            # print(value)
             if field == "event_start_date":
                 and_conditions.append({"event_start_date": {"$gte": value}})
-                # print(query)
             if field == "event_end_date":
                 and_conditions.append({"event_start_date": {"$lte": value}})
-                # print(query)
 
         if field in ["minprice", "maxprice"] and value != "":
             if field == "minprice":
@@ -1075,6 +1102,132 @@ async def admin_feedback(data: dict):
         return {"error": "Admin Not Found", "success": False}
 
 
+# org dashboard graph data
+@event.post("/orgdashboardgraph")
+async def org_dashboard_graph(data: dict):
+    clubname = data["clubname"]
+    org = conn.event.organization.find_one({"clubname": clubname})
+    # post = conn.event.post.find({"clubname": clubname})
+    if org:
+        # posts = serializeList(post)
+        org = serializeDict(org)
+        memtype = org["memtype"]
+        nonsubscribers = []
+        subscribers = []
+        for i in org["members"]:
+            if i["subscribe"] and i["start_date"].year == data["year"]:
+                subscribers.append(i)
+            else:
+                nonsubscribers.append(i)
+        month_names = [
+            "Jan", "Feb", "March", "April",
+            "May", "June", "July", "Aug",
+            "Sept", "Oct", "Nov", "Dec"
+        ]
+        # totalevents = {}
+        totalmembers = {}
+        totalprofit = {}
+        tmembers = []
+        tprofit = []
+        # tevent = []
+        result = []
+        # for i in posts:
+        #     if i["event_start_date"].year == data["year"]:
+        #         if month_names[i["event_start_date"].month-1] in totalevents:
+        #             totalevents[month_names[i["event_start_date"].month-1]] += 1
+        #         else:
+        #             totalevents[month_names[i["event_start_date"].month-1]] = 1
+        for i in subscribers:
+            # Code For total Members in a month
+            if month_names[i["start_date"].month-1] in totalmembers:
+                totalmembers[month_names[i["start_date"].month-1]] += 1
+            else:
+                totalmembers[month_names[i["start_date"].month-1]] = 1
+            # Code For total Profit in a month
+            for j in memtype:
+                if j["type"] == i["membertype"]:
+                    if month_names[i["start_date"].month-1] in totalprofit:
+                        totalprofit[month_names[i["start_date"].month-1]] += j["price"]
+                    else:
+                        totalprofit[month_names[i["start_date"].month-1]] = j["price"]
+                    break
+             
+        for i in month_names:
+            if i not in totalmembers:
+                totalmembers[i] = 0
+            if i not in totalprofit:
+                totalprofit[i] = 0
+            # if i not in totalevents:
+            #     totalevents[i] = 0
+        
+        for key, value in totalmembers.items():
+            tmembers.append({"month": key, "subscribers": value})
+        tmembers = sorted(tmembers, key=lambda x: month_names.index(x['month']))
+        for key, value in totalprofit.items():
+            tprofit.append({"month": key, "profit": value})
+        tprofit = sorted(tprofit, key=lambda x: month_names.index(x['month']))
+
+        # for key, value in totalevents.items():
+        #     tevent.append({"month": key, "events": value})
+        result.append(tmembers)
+        result.append(tprofit)
+        return result
+    else:
+        return {"error": "Organisation Not Found", "success": False}
+    
+# get all year in which Event posts
+@event.post("/getalleventyear")
+async def get_all_event_year(data: dict):
+    post1 = serializeList(conn.event.post.find({"clubname": data["clubname"]}))
+    post2 = serializeList(conn.event.pastevent.find({"clubname": data["clubname"]}))
+    years=[]
+    if len(post1):
+        for singlepost in post1:
+            if singlepost["event_start_date"].year not in years:
+                years.append(singlepost["event_start_date"].year)
+    if len(post2):
+        for singlepost in post2:
+            if singlepost["event_start_date"].year not in years:
+                years.append(singlepost["event_start_date"].year)
+    years.sort(reverse=True)
+    return years
+
+# get all event post by year
+@event.post("/geteventpostbyyear")
+async def get_event_post_by_year(data: dict):
+    month_names = [
+            "Jan", "Feb", "March", "April",
+            "May", "June", "July", "Aug",
+            "Sept", "Oct", "Nov", "Dec"
+        ]
+    post1 = serializeList(conn.event.post.find({"clubname": data["clubname"]}))
+    post2 = serializeList(conn.event.pastevent.find({"clubname": data["clubname"]}))
+    result = []
+    totalevents = {}
+    tevents = []
+    for i in post1:
+        if i["event_start_date"].year == data["year"]:
+            if month_names[i["event_start_date"].month-1] in totalevents:
+                totalevents[month_names[i["event_start_date"].month-1]] += 1
+            else:
+                totalevents[month_names[i["event_start_date"].month-1]] = 1
+    for i in post2:
+        if i["event_start_date"].year == data["year"]:
+            if month_names[i["event_start_date"].month-1] in totalevents:
+                totalevents[month_names[i["event_start_date"].month-1]] += 1
+            else:
+                totalevents[month_names[i["event_start_date"].month-1]] = 1
+    for i in month_names:
+            if i not in totalevents:
+                totalevents[i] = 0
+    for key, value in totalevents.items():
+        tevents.append({"month": key, "events": value})
+    tevents = sorted(tevents, key=lambda x: month_names.index(x['month']))
+    result.append(tevents)
+    return result
+
+
+
 # Routes for Post ------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>
 
 # Insert Event Post
@@ -1113,7 +1266,6 @@ async def event_post(data: EventPost):
         conn.event.post.insert_one(data_dict)
         return {"data": "Event data successfully submitted"}
     except ValueError:
-        print("ValueError")
         return {"error": "ValueError", "success": False}
 
 # Get Event Post by Clubname
@@ -1225,7 +1377,6 @@ async def post_feedback(data: dict):
 @event.post("/usersignup/")
 async def create_user(user: User):
     d1 = dict(user)
-    # print(d1)
     email_pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
     if re.match(email_pattern, d1["email"]) == None:
         return {"error": "Invalid Email Format", "success": False}
@@ -1246,7 +1397,6 @@ async def create_user(user: User):
         usernameList.append(j["username"])
 
     uniqueusernameList = list(set(usernameList))
-    # print(uniqueusernameList)
 
     if d1["username"] in uniqueusernameList:
         return {"error": "Username already exists", "success": False}
@@ -1325,7 +1475,6 @@ async def fetch_all_post_userside(uname: str):
 async def postfilter_user(data: dict):
     past_events()
     query = {}
-    # print(data)
     and_conditions = []
 
     for field, value in data.items():
@@ -1388,7 +1537,6 @@ async def event_participate(id: str, data: dict):
     post = conn.event.post.find_one({"_id": ObjectId(id)})
     if post:
         p1 = serializeDict(post)["participate"]
-        # print(p1)
         p1.append(data)
         conn.event.post.find_one_and_update(
             {"_id": ObjectId(id)}, {"$set": {"participate": p1}})
@@ -1402,9 +1550,7 @@ async def post_search_user(data: dict):
     past_events()
     result = conn.event.post.find()
     posts = []
-    # print(data)
     regex_pattern = re.compile(f"^{re.escape(data['title'])}.*", re.IGNORECASE)
-    # print(re.match(regex_pattern,title))
 
     if (result != []):
         allpost = serializeList(result)
@@ -1518,7 +1664,6 @@ async def filter_memtype(data: dict):
         {"clubname": data["clubname"]}))
     if len(org) != 0:
         memtype = org["memtype"]
-        # print(memtype)
         for singlemember in org["members"]:
             if singlemember["username"] == data["username"]:
                 memtype = [item for item in memtype if item["type"]
@@ -1565,7 +1710,6 @@ async def search_org_byname(data: dict):
 
     result = serializeList(result)
     if result:
-        # print(result)
         return result
     else:
         return {"error": "No organisation found", "success": False}
@@ -1623,6 +1767,18 @@ def past_events():
                 conn.event.pastevent.insert_one(i)
                 conn.event.post.find_one_and_delete({"_id": ObjectId(i["_id"])})
     
+# get all year in which member is subscribed
+@event.post("/getallsubscribedyear")
+async def get_all_subscribed_year(data: dict):
+    org = serializeDict(conn.event.organization.find_one(
+        {"clubname": data["clubname"]}))
+    years=[]
+    if len(org) != 0:
+        for singlemember in org["members"]:
+            if singlemember["start_date"].year not in years and singlemember["subscribe"] == True:
+                years.append(singlemember["start_date"].year)
+        years.sort(reverse=True)
+        return years
 
 # @event.get("/generate-qr")
 # async def generate_qr(data: str):

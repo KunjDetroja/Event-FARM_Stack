@@ -102,7 +102,7 @@ function OrganizationAddPost() {
                 navigate("/organizations/event");
                 setLFormData({
                     clubname: userData.clubnme,
-                    type:"",
+                    type: "",
                     event_title: '',
                     event_image: "",
                     event_start_date: '',
