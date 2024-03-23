@@ -1,0 +1,93 @@
+.UserloginBody {
+  background-color: #f2e8e4;
+  margin: 2em;
+}
+.Uheader {
+  margin: 5em;
+}
+.Uheader .Uimg {
+  object-fit: contain;
+  width: 17vw;
+  height: auto;
+}
+.Umain {
+  display: flex;
+  justify-content: center;
+}
+.Umain .Uimg {
+  width: 80%;
+}
+.UserForm, .userP, .social-sign-up {
+  width: 70%;
+}
+.UserForm .Uh4 {
+  color: #553b08;
+  padding-bottom: 1em;
+}
+.UserForm .form-control {
+  background-color: #e5e2e9;
+  opacity: 0.7;
+  margin-bottom: 1.5em;
+}
+.UserForm .submit-btn {
+  background-color: #75420e;
+  color: #fff;
+  width: 100%;
+}
+.UserForm .submit-btn:hover {
+  background-color: #f2e8e4;
+  color: #75420e;
+  border: 1px solid #75420e;
+}
+.userP {
+  color: #aaa;
+}
+.userloginstatement{
+  color: black;
+  cursor: pointer;
+}
+.hr-lines {
+  position: relative;
+  max-width: 500px;
+  margin: 50px 0;
+  text-align: center;
+}
+.hr-lines:before {
+  content: " ";
+  height: 2px;
+  width: 150px;
+  background: #aaa;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+.hr-lines:after {
+  content: " ";
+  height: 2px;
+  width: 150px;
+  background: #aaa;
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+}
+.social-sign-up button {
+  width: 100%;
+  border: 1px solid #553b08;
+}
+.social-sign-up button:hover {
+  background: #75420e;
+  color: #fff;
+}
+.social-sign-up .fa-google {
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.sign-in {
+  margin: 1em 0;
+  text-align: center;
+}

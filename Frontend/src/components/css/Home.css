@@ -1,0 +1,424 @@
+form,
+.userDetails {
+  margin: 3rem;
+}
+.afterNavbar {
+  margin-top: 6rem;
+}
+
+/********** Template CSS **********/
+:root {
+  --primary: #fea116;
+  --light: #f1f8ff;
+  --dark: #0f172b;
+}
+.homepage {
+  font-family: "Pacifico", cursive;
+}
+
+/*** Hero Header ***/
+/* .hero-header {
+    background: linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url("");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+} */
+
+.hero-header img {
+  animation: imgRotate 10s linear infinite;
+  border-radius: 1rem;
+}
+/* .imgbox{
+    box-shadow: 0 0 45px rgba(179, 15, 15, 0.08);
+
+} */
+
+/* @keyframes imgRotate { 
+    100% { 
+        transform: rotate(360deg); 
+    }   
+} */
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/*** Section Title ***/
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::before {
+  position: absolute;
+  content: "";
+  /* width: 45px;
+    height: 2px; */
+  top: 50%;
+  left: -55px;
+  margin-top: -1px;
+  background: var(--primary);
+}
+
+.section-title::after {
+  position: absolute;
+  content: "";
+  width: 45px;
+  height: 2px;
+  top: 50%;
+  right: -55px;
+  margin-top: -1px;
+  background: var(--primary);
+}
+
+.section-title.text-start::before,
+.section-title.text-end::after {
+  display: none;
+}
+
+/*** Service ***/
+.service-item {
+  box-shadow: 0 0 45px rgba(0, 0, 0, 0.08);
+  transition: 0.5s;
+}
+
+.service-item:hover {
+  background: var(--primary);
+}
+
+.service-item * {
+  transition: 0.5s;
+}
+
+.service-item:hover * {
+  color: var(--light) !important;
+}
+
+/*** Food Menu ***/
+.nav-pills .nav-item .active {
+  border-bottom: 2px solid var(--primary);
+}
+
+/* about page */
+
+.visible {
+  opacity: 1;
+  transform: translateY(10%) scale(1.03);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+/* org logos */
+
+.maincontainerhome {
+  overflow: hidden;
+  .slider {
+    animation: slidein 30s linear infinite;
+    white-space: nowrap;
+    .logos {
+      width: 100%;
+      display: inline-block;
+      margin: 16px;
+      .fab {
+        height: 7rem;
+        margin: 2rem;
+        animation: fade-in 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
+      }
+    }
+  }
+}
+
+@keyframes slidein {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+/*  */
+@import url("https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700&display=swap");
+
+.stepsbody {
+  --color: rgba(30, 30, 30);
+  --bgColor: rgba(245, 245, 245);
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  font-family: "Exo 2", sans-serif;
+  color: var(--color);
+  background: var(--bgColor);
+}
+
+h1 {
+  text-align: center;
+}
+
+ol {
+  width: min(60rem, 90%);
+  margin-inline: auto;
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+
+  list-style: none;
+  counter-reset: stepnr;
+}
+
+li:nth-child(6n + 1) {
+  --accent-color: #b8df4e;
+}
+li:nth-child(6n + 2) {
+  --accent-color: #4cbccb;
+}
+li:nth-child(6n + 3) {
+  --accent-color: #7197d3;
+}
+li:nth-child(6n + 4) {
+  --accent-color: #ae78cb;
+}
+li:nth-child(6n + 5) {
+  --accent-color: #7dc7a4;
+}
+li:nth-child(6n + 6) {
+  --accent-color: #f078c2;
+}
+
+ol li {
+  counter-increment: stepnr;
+  width: 18rem;
+  --borderS: 2rem;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: calc(var(--borderS) + 2rem);
+  position: relative;
+}
+ol li::before,
+ol li::after {
+  inset: 0;
+  position: absolute;
+  border-radius: 50%;
+  border: var(--borderS) solid var(--bgColor);
+  line-height: 1.1;
+}
+ol li::before {
+  content: counter(stepnr);
+  color: var(--accent-color);
+  padding-left: 10rem;
+  font-size: 12rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+ol li::after {
+  content: "";
+  filter: drop-shadow(-0.25rem 0.25rem 0.0675rem rgba(0, 0, 0, 0.75)) blur(5px);
+}
+
+ol li > * {
+  width: 7.5rem;
+}
+ol li .icon {
+  font-size: 2rem;
+  color: var(--accent-color);
+  text-align: center;
+}
+ol li .title {
+  font-size: 2rem;
+  font-weight: 500;
+}
+ol li .descr {
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+.credits {
+  margin-top: 2rem;
+  text-align: right;
+}
+.credits a {
+  color: var(--color);
+}
+
+
+
+/* testimonials */
+
+/* .ag-format-container {
+  width: 1142px;
+  margin: 0 auto;
+}
+
+.mainreviewssection {
+  background-color: #000;
+}
+
+.ag-courses_box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+
+  padding: 50px 0;
+}
+.ag-courses_item {
+  -ms-flex-preferred-size: calc(33.33333% - 30px);
+  flex-basis: calc(33.33333% - 30px);
+
+  margin: 0 15px 30px;
+
+  overflow: hidden;
+
+  border-radius: 28px;
+}
+.ag-courses-item_link {
+  display: block;
+  padding: 30px 20px;
+  background-color: #121212;
+
+  overflow: hidden;
+
+  position: relative;
+}
+.ag-courses-item_link:hover,
+.ag-courses-item_link:hover .ag-courses-item_date {
+  text-decoration: none;
+  color: #fff;
+}
+.ag-courses-item_link:hover .ag-courses-item_bg {
+  -webkit-transform: scale(10);
+  -ms-transform: scale(10);
+  transform: scale(10);
+}
+.ag-courses-item_title {
+  min-height: 87px;
+  margin: 0 0 25px;
+
+  overflow: hidden;
+
+  font-weight: bold;
+  font-size: 30px;
+  color: #fff;
+
+  z-index: 2;
+  position: relative;
+}
+.ag-courses-item_date-box {
+  font-size: 18px;
+  color: #fff;
+
+  z-index: 2;
+  position: relative;
+}
+.ag-courses-item_date {
+  font-weight: bold;
+  color: #f9b234;
+
+  -webkit-transition: color 0.5s ease;
+  -o-transition: color 0.5s ease;
+  transition: color 0.5s ease;
+}
+.ag-courses-item_bg {
+  height: 128px;
+  width: 128px;
+  background-color: #f9b234;
+
+  z-index: 1;
+  position: absolute;
+  top: -75px;
+  right: -75px;
+
+  border-radius: 50%;
+
+  -webkit-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+.ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+  background-color: #3ecd5e;
+}
+.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+  background-color: #e44002;
+}
+.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+  background-color: #952aff;
+}
+.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+  background-color: #cd3e94;
+}
+.ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+  background-color: #4c49ea;
+}
+
+@media only screen and (max-width: 979px) {
+  .ag-courses_item {
+    -ms-flex-preferred-size: calc(50% - 30px);
+    flex-basis: calc(50% - 30px);
+  }
+  .ag-courses-item_title {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .ag-format-container {
+    width: 96%;
+  }
+}
+@media only screen and (max-width: 639px) {
+  .ag-courses_item {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+  }
+  .ag-courses-item_title {
+    min-height: 72px;
+    line-height: 1;
+
+    font-size: 24px;
+  }
+  .ag-courses-item_link {
+    padding: 22px 40px;
+  }
+  .ag-courses-item_date-box {
+    font-size: 16px;
+  }
+} */
+
+
+/* the popular cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  border: none;
+  &:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+  }
+  a {
+    color: initial;
+    &:hover {
+      text-decoration: initial;
+    }
+  }
+  .text-muted i {
+    margin: 0 10px;
+  }
+}

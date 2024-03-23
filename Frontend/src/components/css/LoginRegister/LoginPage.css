@@ -1,0 +1,65 @@
+.mainbuttons{
+    margin-top:1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.choiceBtn {
+  align-items: center;
+  background-color: white;
+  border: 2px solid #0e2643;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #0e2643;
+  cursor: pointer;
+  display: flex;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  height: 48px;
+  justify-content: center;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.choiceBtn:after {
+  background-color: #0e2643;
+  border-radius: 8px;
+  content: "";
+  display: block;
+  height: 48px;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  top: -2px;
+  transform: translate(8px, 8px);
+  transition: transform .2s ease-out;
+  z-index: -1;
+}
+
+.choiceBtn:hover:after {
+  transform: translate(0, 0);
+}
+
+.choiceBtn:active {
+  background-color: whitesmoke;
+  outline: 0;
+}
+
+.choiceBtn:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .choiceBtn {
+    padding: 0 40px;
+  }
+}

@@ -1,0 +1,198 @@
+/* .tablehead {
+  background-color: #0e2643 !important;
+  color: white !important;
+}
+.trtext {
+  color: #0e2643 !important;
+} */
+.tablehead{
+  background-color: #0e2643 !important; 
+  color: white !important;
+  text-align: center; 
+  /* display: "flex";
+  justify-content: "center";
+  align-items: "center" */
+}
+.trtext{
+  /* color: #0e2643 !important; */
+  font-size: 14px !important  ; 
+  text-align: center;
+  /* justify-content: center; */
+  /* font-weight:lighter;  */
+}
+.addmembtn {
+  color: white;
+  background-color: #0e2643;
+  padding: 0.3rem;
+  border-radius: 0.375rem;
+
+}
+.closeformbtn{
+  color: white;
+  background-color: #0e2643;
+  padding: 0.7rem 1rem;
+  border-radius: 0.375rem;
+}
+
+.inputdiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .trtext{
+      width: 80px;
+}
+}
+.memberdetailpostbtn {
+  color: white;
+  background-color: #0e2643;
+  border: none;
+  margin-left: 0.8rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+}
+.filtermemmerstb {
+  display: table;
+  width: 100%;
+}
+
+.filtermemmerstd {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.filtermemmersinput,
+.filtermemmersbutton {
+  color: #fff;
+  font-family: Nunito;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+#filtermemmerscover {
+  /* position: absolute; */
+  width: 100%;
+  /* padding: 0.2px; */
+  /* padding: 35px; */
+  background-color: #0e2643;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px #122e50, 0 0 0 20px #ffffffeb;
+  transform: scale(0.6);
+}
+
+.filtermemmersform {
+  height: 96px;
+}
+
+.filtermemmersinput[type="text"] {
+  width: 100%;
+  /* height: 96px; */
+  font-size: 44px;
+  /* line-height: 1; */
+  /* margin-left: 3px;   */
+}
+
+.filtermemmersinput[type="text"]::placeholder {
+  color: whitesmoke;
+}
+
+.filtermemmersbutton {
+  position: relative;
+  display: block;
+  width: 84px;
+  height: 96px;
+  cursor: pointer;
+}
+
+/* #filtermemmerss-circle {
+    position: relative;
+    top: -9px;
+    left: 22px;
+    width: 47px;
+    height: 47px; */
+#filtermemmerss-circle {
+  position: relative;
+    top: -9px;
+    left: 22px;
+    width: 47px;
+    height: 47px;
+  margin-top: 0;
+  border-width: 15px;
+  border: 15px solid #fff;
+  background-color: transparent;
+  border-radius: 50%;
+  transition: 0.5s ease all;
+}
+
+.filtermemmersbutton .filtermemmersspan {
+  position: absolute;
+  top: 58px;
+  left: 43px;
+  display: block;
+  width: 45px;
+  height: 15px;
+  background-color: transparent;
+  border-radius: 10px;
+  transform: rotateZ(52deg);
+  transition: 0.5s ease all;
+}
+
+.filtermemmersbutton .filtermemmersspan:before,
+.filtermemmersbutton .filtermemmersspan:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 45px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  transform: rotateZ(0);
+  transition: 0.5s ease all;
+}
+
+#filtermemmerscover:hover #filtermemmerss-circle {
+  top: -1px;
+  width: 67px;
+  height: 15px;
+  border-width: 0;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+#filtermemmerscover:hover .filtermemmersbutton .filtermemmersspan {
+  top: 50%;
+  left: 56px;
+  width: 25px;
+  margin-top: -9px;
+  transform: rotateZ(0);
+}
+
+#filtermemmerscover:hover .filtermemmersbutton .filtermemmersspan:before {
+  bottom: 11px;
+  transform: rotateZ(52deg);
+}
+
+#filtermemmerscover:hover .filtermemmersbutton .filtermemmersspan:after {
+  bottom: -11px;
+  transform: rotateZ(-52deg);
+}
+#filtermemmerscover:hover .filtermemmersbutton .filtermemmersspan:before,
+#filtermemmerscover:hover .filtermemmersbutton .filtermemmersspan:after {
+  right: -6px;
+  width: 40px;
+  background-color: #fff;
+}
+.membersearchicon > i{
+height: 2px;
+width: 2px;
+}
+.addmembtn{
+  color: white;
+  background-color: #0e2643;
+  border: none;
+  margin-left: 1rem;
+  padding: 10px;
+  border-radius: 0.375rem;
+}
