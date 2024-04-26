@@ -22,7 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/eventenv/*
+eventvenv/*
 Backend/static/event.json
 Backend/static/trial[1].json
 Backend/.env
